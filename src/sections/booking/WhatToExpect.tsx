@@ -1,5 +1,3 @@
-import React from "react";
-
 const WhatToExpect = () => {
   return (
     <section className="py-16 bg-card/30">

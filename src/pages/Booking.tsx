@@ -2,8 +2,8 @@ import { useEffect } from "react";
 
 import Header from "@/sections/booking/Header";
 import BookingOptions from "@/sections/booking/BookingOptions";
-import WhatToExpect from "@/sections/booking/WhattoExpect";
 import Testimonials from "@/sections/booking/Testimonials";
+import WhatToExpect from "@/sections/booking/WhatToExpect";
 
 const Booking = () => {
   // Add scroll reveal animation
