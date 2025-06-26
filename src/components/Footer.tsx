@@ -1,7 +1,7 @@
-
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Github, Linkedin, Mail } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Github, Linkedin, Mail } from "lucide-react";
+import SocialLinks from "@/common/SocialLinks";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -11,40 +11,18 @@ const Footer = () => {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="text-2xl font-bold text-foreground mb-4 block">
+            <Link
+              to="/"
+              className="text-2xl font-bold text-foreground mb-4 block"
+            >
               MB<span className="text-primary">.</span>
             </Link>
             <p className="text-muted-foreground mb-6 max-w-md">
-              Full-Stack Engineer with over 3 years of experience building scalable web applications and delivering
-              high-quality solutions for clients worldwide.
+              Full-Stack Engineer with over 3 years of experience building
+              scalable web applications and delivering high-quality solutions
+              for clients worldwide.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="https://github.com/mohamedbrzan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="GitHub"
-              >
-                <Github size={20} />
-              </a>
-              <a
-                href="https://linkedin.com/in/mohamedbrzan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={20} />
-              </a>
-              <a
-                href="mailto:mohamed.brzan@example.com"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Email"
-              >
-                <Mail size={20} />
-              </a>
-            </div>
+            <SocialLinks/>
           </div>
 
           <div>
@@ -101,17 +79,14 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="mailto:mohamed.brzan@example.com"
+                  href="mailto:mohamedbrzan.dev@gmail.com"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  mohamed.brzan@example.com
+                  mohamedbrzan.dev@gmail.com
                 </a>
               </li>
               <li className="pt-4">
-                <Link
-                  to="/booking"
-                  className="btn btn-primary"
-                >
+                <Link to="/booking" className="btn btn-primary">
                   Book a Meeting
                 </Link>
               </li>

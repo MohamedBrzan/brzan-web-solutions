@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { ExternalLink, Github } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { ExternalLink, Github } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface Project {
   id: string;
@@ -21,7 +20,12 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, className }) => {
   return (
-    <div className={cn("bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 group", className)}>
+    <div
+      className={cn(
+        "bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 group",
+        className
+      )}
+    >
       <div className="relative h-48 overflow-hidden">
         <img
           src={project.image}
@@ -55,11 +59,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, className }) => {
       </div>
       <div className="p-5">
         <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-        <p className="text-muted-foreground mb-4 line-clamp-3">{project.description}</p>
+        <p className="text-muted-foreground mb-4 line-clamp-3">
+          {project.description}
+        </p>
         <div className="flex flex-wrap gap-2">
           {project.technologies.map((tech, index) => (
             <span
-              key={index}
+              key={+index}
               className="text-xs py-1 px-2 bg-secondary/30 rounded-full text-muted-foreground"
             >
               {tech}
