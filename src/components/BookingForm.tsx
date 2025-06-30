@@ -1,40 +1,67 @@
-
-import React, { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { CalendarIcon, Clock } from 'lucide-react';
+import React, { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon, Clock } from "lucide-react";
 
 const meetingTypes = [
-  { id: 'consultation', label: 'Consultation', duration: '30 min', price: '$50' },
-  { id: 'project-discussion', label: 'Project Discussion', duration: '60 min', price: '$100' },
-  { id: 'code-review', label: 'Code Review', duration: '45 min', price: '$75' },
-  { id: 'mentoring', label: 'Technical Mentoring', duration: '60 min', price: '$100' },
+  {
+    id: "consultation",
+    label: "Consultation",
+    duration: "30 min",
+    price: "$50",
+  },
+  {
+    id: "project-discussion",
+    label: "Project Discussion",
+    duration: "60 min",
+    price: "$100",
+  },
+  { id: "code-review", label: "Code Review", duration: "45 min", price: "$75" },
+  {
+    id: "mentoring",
+    label: "Technical Mentoring",
+    duration: "60 min",
+    price: "$100",
+  },
 ];
 
 const timeSlots = [
-  '09:00 AM', '10:00 AM', '11:00 AM',
-  '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM'
+  "09:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "01:00 PM",
+  "02:00 PM",
+  "03:00 PM",
+  "04:00 PM",
 ];
 
 const BookingForm = () => {
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    meetingType: '',
+    name: "",
+    email: "",
+    phone: "",
+    meetingType: "",
     date: null as Date | null,
-    time: '',
-    message: '',
+    time: "",
+    message: "",
   });
-  
+
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -49,7 +76,7 @@ const BookingForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.date || !formData.time || !formData.meetingType) {
       toast({
         title: "Missing information",
@@ -58,34 +85,37 @@ const BookingForm = () => {
       });
       return;
     }
-    
+
     setLoading(true);
-    
+
     // This is a placeholder for the actual Supabase implementation
     // In a real implementation, we would:
     // 1. Check if the time slot is available
     // 2. Save the booking to Supabase
     // 3. Send confirmation emails
-    console.log('Booking data to be sent to Supabase:', formData);
-    
+    console.log("Booking data to be sent to Supabase:", formData);
+
     // Simulate API call
     setTimeout(() => {
       toast({
         title: "Booking confirmed!",
-        description: `Your meeting is scheduled for ${format(formData.date as Date, 'MMMM d, yyyy')} at ${formData.time}.`,
+        description: `Your meeting is scheduled for ${format(
+          formData.date,
+          "MMMM d, yyyy"
+        )} at ${formData.time}.`,
       });
-      
+
       // Reset form
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        meetingType: '',
+        name: "",
+        email: "",
+        phone: "",
+        meetingType: "",
         date: null,
-        time: '',
-        message: '',
+        time: "",
+        message: "",
       });
-      
+
       setLoading(false);
     }, 1500);
   };
@@ -108,7 +138,7 @@ const BookingForm = () => {
             placeholder="Your name"
           />
         </div>
-        
+
         <div>
           <label htmlFor="email" className="block mb-2 text-sm font-medium">
             Email
@@ -125,7 +155,7 @@ const BookingForm = () => {
           />
         </div>
       </div>
-      
+
       <div>
         <label htmlFor="phone" className="block mb-2 text-sm font-medium">
           Phone Number (optional)
@@ -140,7 +170,7 @@ const BookingForm = () => {
           placeholder="+1 (555) 123-4567"
         />
       </div>
-      
+
       <div>
         <label htmlFor="meetingType" className="block mb-2 text-sm font-medium">
           Meeting Type
@@ -161,12 +191,10 @@ const BookingForm = () => {
           ))}
         </select>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block mb-2 text-sm font-medium">
-            Date
-          </label>
+          <label className="block mb-2 text-sm font-medium">Date</label>
           <Popover>
             <PopoverTrigger asChild>
               <button
@@ -177,7 +205,11 @@ const BookingForm = () => {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {formData.date ? format(formData.date, 'PPP') : <span>Select date</span>}
+                {formData.date ? (
+                  format(formData.date, "PPP")
+                ) : (
+                  <span>Select date</span>
+                )}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -196,11 +228,9 @@ const BookingForm = () => {
             </PopoverContent>
           </Popover>
         </div>
-        
+
         <div>
-          <label className="block mb-2 text-sm font-medium">
-            Time
-          </label>
+          <label className="block mb-2 text-sm font-medium">Time</label>
           <Popover>
             <PopoverTrigger asChild>
               <button
@@ -223,8 +253,8 @@ const BookingForm = () => {
                     onClick={() => handleTimeSelect(time)}
                     className={cn(
                       "px-3 py-2 rounded-md text-sm text-center",
-                      formData.time === time 
-                        ? "bg-primary text-white" 
+                      formData.time === time
+                        ? "bg-primary text-white"
                         : "bg-card hover:bg-secondary/30"
                     )}
                   >
@@ -236,7 +266,7 @@ const BookingForm = () => {
           </Popover>
         </div>
       </div>
-      
+
       <div>
         <label htmlFor="message" className="block mb-2 text-sm font-medium">
           Additional Information (optional)
@@ -251,15 +281,15 @@ const BookingForm = () => {
           rows={4}
         />
       </div>
-      
+
       <button
         type="submit"
         className="btn btn-primary w-full"
         disabled={loading}
       >
-        {loading ? 'Booking...' : 'Confirm Booking'}
+        {loading ? "Booking..." : "Confirm Booking"}
       </button>
-      
+
       <p className="text-sm text-muted-foreground text-center">
         Upon confirmation, you'll receive an email with the meeting details.
       </p>

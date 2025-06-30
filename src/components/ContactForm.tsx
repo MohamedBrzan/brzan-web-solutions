@@ -1,20 +1,34 @@
+import React, { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
 
-import React, { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Enter a valid email"),
+  subject: z.string().min(1, "Subject is required"),
+  message: z.string().min(1, "Message is required"),
+});
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
+if (!baseUrl) throw new Error("Missing VITE_BASE_URL");
+
+type ContactData = z.infer<typeof contactSchema>;
 
 const ContactForm = () => {
   const { toast } = useToast();
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+
+  const [formData, setFormData] = useState<ContactData>({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
-  
+
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -22,28 +36,50 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // This is a placeholder for the actual Supabase implementation
-    // In a real implementation, we would send this data to Supabase
-    console.log('Form data to be sent to Supabase:', formData);
-    
-    // Simulate API call
-    setTimeout(() => {
+
+    const validation = contactSchema.safeParse(formData);
+    if (!validation.success) {
+      const fieldErrors = validation.error.flatten().fieldErrors;
+
+      toast({
+        title: "Validation Error",
+        description: Object.values(fieldErrors).flat().join(" • "),
+        variant: "destructive",
+      });
+
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await fetch(`${baseUrl}/mail/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(validation.data),
+      });
+
       toast({
         title: "Message sent!",
         description: "Thanks for reaching out. I'll get back to you soon.",
       });
-      
-      // Reset form
+
       setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
       });
-      
-      setLoading(false);
-    }, 1000);
+    } catch (err) {
+      console.log(err);
+
+      toast({
+        title: "Error sending message",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -63,7 +99,7 @@ const ContactForm = () => {
           placeholder="Your name"
         />
       </div>
-      
+
       <div>
         <label htmlFor="email" className="block mb-2 text-sm font-medium">
           Email
@@ -79,7 +115,7 @@ const ContactForm = () => {
           placeholder="your.email@example.com"
         />
       </div>
-      
+
       <div>
         <label htmlFor="subject" className="block mb-2 text-sm font-medium">
           Subject
@@ -95,7 +131,7 @@ const ContactForm = () => {
           placeholder="What's this about?"
         />
       </div>
-      
+
       <div>
         <label htmlFor="message" className="block mb-2 text-sm font-medium">
           Message
@@ -111,13 +147,13 @@ const ContactForm = () => {
           rows={6}
         />
       </div>
-      
+
       <button
         type="submit"
         className="btn btn-primary w-full"
         disabled={loading}
       >
-        {loading ? 'Sending...' : 'Send Message'}
+        {loading ? "Sending..." : "Send Message"}
       </button>
     </form>
   );
