@@ -14,7 +14,7 @@ const Pricing = () => {
           <div className="bg-card p-8 rounded-lg border border-border hover:border-primary transition-colors reveal">
             <h3 className="text-2xl font-bold mb-2">Hourly Rate</h3>
             <p className="text-4xl font-bold text-primary mb-6">
-              $80
+              $35
               <span className="text-muted-foreground text-sm font-normal">
                 /hour
               </span>
@@ -24,18 +24,22 @@ const Pricing = () => {
               scope.
             </p>
             <ul className="space-y-2 mb-8">
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Regular progress updates
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Flexible scheduling
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Invoice based on actual hours
-              </li>
+              {[
+                "Regular progress updates",
+                "Flexible scheduling options",
+                "Hourly invoicing precision",
+                "No long-term commitment",
+                "Great for startups and agencies",
+                "Ideal for bugs or quick features",
+              ].map((item, idx) => (
+                <li
+                  key={+idx}
+                  className="flex gap-2 items-start leading-relaxed"
+                >
+                  <span className="text-primary mt-1">✓</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <Link to="/contact" className="btn btn-outline w-full">
               Get Started
@@ -47,26 +51,33 @@ const Pricing = () => {
               Most Popular
             </div>
             <h3 className="text-2xl font-bold mb-2">Project-Based</h3>
+            <p className="text-4xl font-bold text-primary mb-6">
+              $1,500–$5,000
+              <span className="text-muted-foreground text-sm font-normal">
+                /project
+              </span>
+            </p>
             <p className="text-muted-foreground mb-6">
               Fixed price based on project requirements and deliverables.
             </p>
             <ul className="space-y-2 mb-8">
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Detailed proposal and contract
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Clear deliverables and timeline
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Milestone-based payments
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Post-project support
-              </li>
+              {[
+                "Detailed proposal and clear scope",
+                "Defined budget and deliverables",
+                "Legal contract and risk protection",
+                "Scalable code and thorough testing",
+                "Milestone billing and measurable outcomes",
+                "Regular updates and open communication",
+                "Post-launch support and maintenance",
+              ].map((item, idx) => (
+                <li
+                  key={+idx}
+                  className="flex gap-2 items-start leading-relaxed"
+                >
+                  <span className="text-primary mt-1">✓</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <Link to="/contact" className="btn btn-primary w-full">
               Request Quote
@@ -76,7 +87,7 @@ const Pricing = () => {
           <div className="bg-card p-8 rounded-lg border border-border hover:border-primary transition-colors reveal">
             <h3 className="text-2xl font-bold mb-2">Retainer</h3>
             <p className="text-4xl font-bold text-primary mb-6">
-              $3,000
+              $1,500
               <span className="text-muted-foreground text-sm font-normal">
                 /month
               </span>
@@ -85,22 +96,23 @@ const Pricing = () => {
               Consistent support for ongoing development and maintenance needs.
             </p>
             <ul className="space-y-2 mb-8">
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Reserved development time
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Priority support
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Monthly progress reports
-              </li>
-              <li className="flex items-start">
-                <span className="text-primary mr-2">✓</span>
-                Discounted hourly rate
-              </li>
+              {[
+                "Reserved development hours monthly",
+                "Priority queue for urgent tasks",
+                "Monthly progress and reports",
+                "Discounted rate for extra hours",
+                "Proactive code audits",
+                "Flexible scope per month",
+                "Ideal for scaling SaaS or teams",
+              ].map((item, idx) => (
+                <li
+                  key={idx}
+                  className="flex gap-2 items-start leading-relaxed"
+                >
+                  <span className="text-primary mt-1">✓</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <Link to="/contact" className="btn btn-outline w-full">
               Learn More

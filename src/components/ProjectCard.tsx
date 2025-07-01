@@ -9,6 +9,7 @@ export interface Project {
   technologies: string[];
   image: string;
   liveUrl?: string;
+  comingSoon?: boolean;
   githubUrl?: string;
   category: string;
 }
@@ -27,6 +28,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, className }) => {
       )}
     >
       <div className="relative h-48 overflow-hidden">
+        {project.comingSoon && (
+          <span className="absolute top-4 left-4 bg-muted text-muted-foreground text-xs font-semibold px-3 py-1 rounded-full border border-border z-10">
+            Coming Soon
+          </span>
+        )}
         <img
           src={project.image}
           alt={project.title}
