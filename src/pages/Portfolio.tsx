@@ -61,7 +61,7 @@ const projects: Project[] = [
       "Tailwind CSS",
     ],
     image:
-      "https://raw.githubusercontent.com/joschan21/digitalhippo/refs/heads/master/thumbnail.jpg",
+      "https://raw.githubusercontent.com/joschan21/digitalhippo/refs/heads/master/public/thumbnail.jpg",
     // liveUrl: "https://hippoapp.onrender.com/",
     githubUrl: "https://github.com/MohamedBrzan/Hippo_Digital_App",
     category: "Web Application",
