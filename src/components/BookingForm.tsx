@@ -9,6 +9,26 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Clock } from "lucide-react";
+import { z } from "zod";
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
+if (!baseUrl) throw new Error("Missing VITE_BASE_URL");
+
+const bookingSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || /^\+?[0-9\s\-()]{7,20}$/.test(val),
+      "Invalid phone number"
+    ),
+  meetingType: z.string().min(1, "Meeting type is required"),
+  date: z.date({ required_error: "Date is required" }),
+  time: z.string().min(1, "Time is required"),
+  information: z.string().optional(),
+});
 
 const meetingTypes = [
   {
@@ -52,7 +72,7 @@ const BookingForm = () => {
     meetingType: "",
     date: null as Date | null,
     time: "",
-    message: "",
+    information: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -77,10 +97,14 @@ const BookingForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.date || !formData.time || !formData.meetingType) {
+    // Step 1: Validate using zod
+    const parsed = bookingSchema.safeParse(formData);
+
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0];
       toast({
-        title: "Missing information",
-        description: "Please select a meeting type, date, and time.",
+        title: "Validation Error",
+        description: firstError.message,
         variant: "destructive",
       });
       return;
@@ -88,15 +112,20 @@ const BookingForm = () => {
 
     setLoading(true);
 
-    // This is a placeholder for the actual Supabase implementation
-    // In a real implementation, we would:
-    // 1. Check if the time slot is available
-    // 2. Save the booking to Supabase
-    // 3. Send confirmation emails
-    console.log("Booking data to be sent to Supabase:", formData);
+    try {
+      // Step 2: Send to API
+      const response = await fetch(`${baseUrl}/mail/meeting`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(parsed.data),
+      });
 
-    // Simulate API call
-    setTimeout(() => {
+      if (!response.ok) {
+        throw new Error("Failed to send booking");
+      }
+
       toast({
         title: "Booking confirmed!",
         description: `Your meeting is scheduled for ${format(
@@ -105,7 +134,7 @@ const BookingForm = () => {
         )} at ${formData.time}.`,
       });
 
-      // Reset form
+      // Step 3: Reset form
       setFormData({
         name: "",
         email: "",
@@ -113,11 +142,18 @@ const BookingForm = () => {
         meetingType: "",
         date: null,
         time: "",
-        message: "",
+        information: "",
       });
-
+    } catch (error) {
+      toast({
+        title: "Submission Error",
+        description:
+          error.message ?? "Something went wrong while sending booking.",
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -268,13 +304,13 @@ const BookingForm = () => {
       </div>
 
       <div>
-        <label htmlFor="message" className="block mb-2 text-sm font-medium">
+        <label htmlFor="information" className="block mb-2 text-sm font-medium">
           Additional Information (optional)
         </label>
         <textarea
-          id="message"
-          name="message"
-          value={formData.message}
+          id="information"
+          name="information"
+          value={formData.information}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-md bg-card border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
           placeholder="Tell me more about what you'd like to discuss..."
