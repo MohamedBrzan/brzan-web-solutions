@@ -8,7 +8,6 @@ import {
   BlogPost as BlogPostType,
 } from "@/services/blogService";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
-
 const BlogPost = () => {
   const { slug } = useParams();
   const [post, setPost] = useState<BlogPostType | null>(null);
@@ -17,7 +16,6 @@ const BlogPost = () => {
   useEffect(() => {
     const loadPost = async () => {
       if (!slug) return;
-
       setLoading(true);
       const blogPost = await getBlogPostBySlug(slug);
       setPost(blogPost);
@@ -43,9 +41,11 @@ const BlogPost = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">Post Not Found</h1>
+
           <p className="text-muted-foreground mb-8">
             The blog post you're looking for doesn't exist.
           </p>
+
           <Link to="/blog">
             <Button variant="outline">
               <ArrowLeft size={16} className="mr-2" />
@@ -98,9 +98,11 @@ const BlogPost = () => {
                 </span>
               ))}
             </div>
+
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               {post.title}
             </h1>
+
             <p className="text-xl text-muted-foreground mb-6">{post.excerpt}</p>
             <div className="flex items-center gap-6 text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -111,6 +113,7 @@ const BlogPost = () => {
                 <Clock size={16} />
                 <span>{post.readTime}</span>
               </div>
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -190,6 +193,7 @@ const BlogPost = () => {
                 placeholder="Enter your email"
                 className="flex-grow px-4 py-3 rounded-md bg-card border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
               />
+
               <Button className="whitespace-nowrap">Subscribe</Button>
             </div>
           </div>

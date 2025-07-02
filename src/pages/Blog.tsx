@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
-import BlogPostCard, { BlogPost } from "@/components/BlogPostCard";
+import BlogPostCard from "@/components/BlogPostCard";
+import {
+  BlogPost,
+  filterBlogPostsByCategory,
+  getAllBlogPosts,
+  searchBlogPosts,
+} from "@/services/blogService";
 
 // Sample blog posts
 const blogPosts: BlogPost[] = [
   {
-    id: "1",
+    id: 1,
     title: "Implementing Authentication with JWT",
     excerpt:
       "A comprehensive guide to implementing authentication in web applications using JSON Web Tokens (JWT). Learn about secure token storage, refresh strategies, and best practices.",
@@ -15,7 +21,7 @@ const blogPosts: BlogPost[] = [
     slug: "implementing-authentication-with-jwt",
   },
   {
-    id: "2",
+    id: 2,
     title: "Building Scalable React Applications",
     excerpt:
       "Learn the key architectural patterns and best practices for building React applications that scale. This article covers component structure, state management, and performance optimization techniques.",
@@ -25,7 +31,7 @@ const blogPosts: BlogPost[] = [
     slug: "building-scalable-react-applications",
   },
   {
-    id: "3",
+    id: 3,
     title: "Database Optimization Techniques",
     excerpt:
       "Discover techniques to enhance MongoDB performance through indexing, sharding, and query optimization. Implement these strategies to significantly improve your database response times.",
@@ -36,7 +42,7 @@ const blogPosts: BlogPost[] = [
   },
 
   {
-    id: "4",
+    id: 4,
     title: "Real-Time Applications with Socket.io",
     excerpt:
       "Explore how to build real-time features such as chat, notifications, and collaborative editing using Socket.io and Node.js. This tutorial covers both server and client implementation.",
@@ -46,7 +52,7 @@ const blogPosts: BlogPost[] = [
     slug: "real-time-applications-with-socketio",
   },
   {
-    id: "5",
+    id: 5,
     title: "Microservices vs Monoliths: Choosing the Right Architecture",
     excerpt:
       "An analysis of different architectural approaches for web applications. Understand the trade-offs between microservices and monolithic architectures to make informed decisions for your projects.",
@@ -56,7 +62,7 @@ const blogPosts: BlogPost[] = [
     slug: "microservices-vs-monoliths",
   },
   {
-    id: "6",
+    id: 6,
     title: "Advanced TypeScript Patterns for React Developers",
     excerpt:
       "Take your TypeScript skills to the next level with advanced patterns specifically useful for React development. Learn about generics, utility types, and type-safe component design.",
@@ -67,7 +73,6 @@ const blogPosts: BlogPost[] = [
   },
 ];
 
-// Sample categories
 const categories = [
   "All",
   "React",
@@ -84,8 +89,34 @@ const Blog = () => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchTerm, setSearchTerm] = useState<string>("");
 
+  useEffect(() => {
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const reveal = () => {
+      revealElements.forEach((element) => {
+        const windowHeight = window.innerHeight;
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+
+        if (elementTop < windowHeight - elementVisible) {
+          element.classList.add("active");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", reveal);
+    reveal(); // Initial check
+
+    return () => window.removeEventListener("scroll", reveal);
+  }, []);
+
+  useEffect(() => {
+    setFilteredPosts(getAllBlogPosts());
+  }, []);
+
   const filterPosts = (category: string) => {
     setActiveCategory(category);
+
     if (category === "All") {
       setFilteredPosts(
         blogPosts.filter((post) =>
@@ -101,6 +132,18 @@ const Blog = () => {
             post.excerpt.includes(category)
         )
       );
+
+      let posts = filterBlogPostsByCategory(category);
+
+      if (searchTerm) {
+        posts = posts.filter(
+          (post) =>
+            post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      setFilteredPosts(posts);
     }
   };
 
@@ -123,30 +166,23 @@ const Blog = () => {
               post.excerpt.includes(activeCategory))
         )
       );
+
+      if (term) {
+        const searchResults = searchBlogPosts(term);
+        const categoryFiltered =
+          activeCategory === "All"
+            ? searchResults
+            : searchResults.filter((post) =>
+                post.tags.some((tag) =>
+                  tag.toLowerCase().includes(activeCategory.toLowerCase())
+                )
+              );
+        setFilteredPosts(categoryFiltered);
+      } else {
+        setFilteredPosts(filterBlogPostsByCategory(activeCategory));
+      }
     }
   };
-
-  // Add scroll reveal animation
-  useEffect(() => {
-    const revealElements = document.querySelectorAll(".reveal");
-
-    const reveal = () => {
-      revealElements.forEach((element) => {
-        const windowHeight = window.innerHeight;
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-
-        if (elementTop < windowHeight - elementVisible) {
-          element.classList.add("active");
-        }
-      });
-    };
-
-    window.addEventListener("scroll", reveal);
-    reveal(); // Initial check
-
-    return () => window.removeEventListener("scroll", reveal);
-  }, [filteredPosts]);
 
   return (
     <div>
