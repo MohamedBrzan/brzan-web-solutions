@@ -1,6 +1,4 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import { Github, Linkedin, Mail } from "lucide-react";
 import SocialLinks from "@/common/SocialLinks";
 
 const Footer = () => {
@@ -22,7 +20,7 @@ const Footer = () => {
               scalable web applications and delivering high-quality solutions
               for clients worldwide.
             </p>
-            <SocialLinks/>
+            <SocialLinks />
           </div>
 
           <div>

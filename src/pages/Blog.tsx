@@ -256,7 +256,7 @@ const Blog = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-16 bg-card/30">
+      {/* <section className="py-16 bg-card/30">
         <div className="container">
           <div className="bg-card rounded-xl p-8 md:p-12 max-w-4xl mx-auto reveal">
             <div className="text-center mb-8">
@@ -290,10 +290,10 @@ const Blog = () => {
             </form>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Call to Action */}
-      <section className="py-16">
+      <section className="py-16 bg-card/30">
         <div className="container">
           <div className="text-center max-w-2xl mx-auto reveal">
             <h2 className="text-3xl font-bold mb-6">Have a Topic in Mind?</h2>

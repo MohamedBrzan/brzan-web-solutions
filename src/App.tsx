@@ -13,6 +13,7 @@ import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import Booking from "./pages/Booking";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/services" element={<Services />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/booking" element={<Booking />} />
             <Route path="*" element={<NotFound />} />
