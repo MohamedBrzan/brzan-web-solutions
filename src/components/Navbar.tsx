@@ -1,7 +1,6 @@
-
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,40 +28,55 @@ const Navbar = () => {
         {/* Desktop menu */}
         <ul className="hidden md:flex space-x-8 items-center">
           <li>
-            <Link to="/" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               Home
             </Link>
           </li>
           <li>
-            <Link to="/portfolio" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/portfolio"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               Portfolio
             </Link>
           </li>
           <li>
-            <Link to="/about" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/about"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               About
             </Link>
           </li>
           <li>
-            <Link to="/services" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/services"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               Services
             </Link>
           </li>
           <li>
-            <Link to="/blog" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/blog"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               Blog
             </Link>
           </li>
           <li>
-            <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
+            <Link
+              to="/contact"
+              className="text-foreground hover:text-primary transition-colors"
+            >
               Contact
             </Link>
           </li>
           <li>
-            <Link
-              to="/booking"
-              className="btn btn-primary"
-            >
+            <Link to="/booking" className="btn btn-primary">
               Book a Meeting
             </Link>
           </li>
@@ -84,10 +98,10 @@ const Navbar = () => {
                   <X size={24} />
                 </button>
               </div>
-              <ul className="flex flex-col space-y-6 p-6">
+              <ul className="flex flex-col space-y-6 p-6 bg-background">
                 <li>
-                  <Link 
-                    to="/" 
+                  <Link
+                    to="/"
                     className="text-foreground hover:text-primary transition-colors text-xl"
                     onClick={toggleMenu}
                   >
@@ -95,8 +109,8 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/portfolio" 
+                  <Link
+                    to="/portfolio"
                     className="text-foreground hover:text-primary transition-colors text-xl"
                     onClick={toggleMenu}
                   >
@@ -104,8 +118,8 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/about" 
+                  <Link
+                    to="/about"
                     className="text-foreground hover:text-primary transition-colors text-xl"
                     onClick={toggleMenu}
                   >
@@ -113,8 +127,8 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/services" 
+                  <Link
+                    to="/services"
                     className="text-foreground hover:text-primary transition-colors text-xl"
                     onClick={toggleMenu}
                   >
@@ -122,8 +136,8 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/blog" 
+                  <Link
+                    to="/blog"
                     className="text-foreground hover:text-primary transition-colors text-xl"
                     onClick={toggleMenu}
                   >
@@ -131,8 +145,8 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link 
-                    to="/contact" 
+                  <Link
+                    to="/contact"
                     className="text-foreground hover:text-primary transition-colors text-xl"
                     onClick={toggleMenu}
                   >
