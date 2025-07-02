@@ -1,31 +1,11 @@
+
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import BlogPostCard, { BlogPost } from "@/components/BlogPostCard";
+import BlogPostCard from "@/components/BlogPostCard";
+import { getAllBlogPosts } from "@/services/blogService";
 
 const Blog = () => {
-  // Sample data for blog posts
-  const blogPosts: BlogPost[] = [
-    {
-      id: "1",
-      title: "Building Scalable React Applications",
-      excerpt:
-        "Learn the key architectural patterns and best practices for building React applications that scale.",
-      date: "April 12, 2023",
-      image:
-        "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      slug: "building-scalable-react-applications",
-    },
-    {
-      id: "2",
-      title: "Optimizing MongoDB for Performance",
-      excerpt:
-        "Discover techniques to enhance MongoDB performance through indexing, sharding, and query optimization.",
-      date: "March 5, 2023",
-      image:
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      slug: "optimizing-mongodb-for-performance",
-    },
-  ];
+  const blogPosts = getAllBlogPosts().slice(0, 2); // Show only first 2 posts
 
   return (
     <section className="py-20 bg-card/30">

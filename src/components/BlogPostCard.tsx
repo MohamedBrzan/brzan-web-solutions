@@ -1,15 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-export interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  image: string;
-  slug: string;
-}
+import { BlogPost } from '@/services/blogService';
 
 interface BlogPostCardProps {
   post: BlogPost;

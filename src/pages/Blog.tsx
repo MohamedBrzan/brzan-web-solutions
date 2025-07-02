@@ -1,61 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
-import BlogPostCard, { BlogPost } from '@/components/BlogPostCard';
+import BlogPostCard from '@/components/BlogPostCard';
+import { getAllBlogPosts, searchBlogPosts, filterBlogPostsByCategory, BlogPost } from '@/services/blogService';
 
-// Sample blog posts
-const blogPosts: BlogPost[] = [
-  {
-    id: '1',
-    title: 'Building Scalable React Applications',
-    excerpt: 'Learn the key architectural patterns and best practices for building React applications that scale. This article covers component structure, state management, and performance optimization techniques.',
-    date: 'April 12, 2023',
-    image: 'https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'building-scalable-react-applications',
-  },
-  {
-    id: '2',
-    title: 'Optimizing MongoDB for Performance',
-    excerpt: 'Discover techniques to enhance MongoDB performance through indexing, sharding, and query optimization. Implement these strategies to significantly improve your database response times.',
-    date: 'March 5, 2023',
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'optimizing-mongodb-for-performance',
-  },
-  {
-    id: '3',
-    title: 'Implementing Authentication with JWT',
-    excerpt: 'A comprehensive guide to implementing authentication in web applications using JSON Web Tokens (JWT). Learn about secure token storage, refresh strategies, and best practices.',
-    date: 'February 18, 2023',
-    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'implementing-authentication-with-jwt',
-  },
-  {
-    id: '4',
-    title: 'Real-Time Applications with Socket.io',
-    excerpt: 'Explore how to build real-time features such as chat, notifications, and collaborative editing using Socket.io and Node.js. This tutorial covers both server and client implementation.',
-    date: 'January 30, 2023',
-    image: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'real-time-applications-with-socketio',
-  },
-  {
-    id: '5',
-    title: 'Microservices vs Monoliths: Choosing the Right Architecture',
-    excerpt: 'An analysis of different architectural approaches for web applications. Understand the trade-offs between microservices and monolithic architectures to make informed decisions for your projects.',
-    date: 'December 12, 2022',
-    image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'microservices-vs-monoliths',
-  },
-  {
-    id: '6',
-    title: 'Advanced TypeScript Patterns for React Developers',
-    excerpt: 'Take your TypeScript skills to the next level with advanced patterns specifically useful for React development. Learn about generics, utility types, and type-safe component design.',
-    date: 'November 5, 2022',
-    image: 'https://images.unsplash.com/photo-1593720213428-28a5b9e94613?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    slug: 'advanced-typescript-patterns-for-react',
-  },
-];
-
-// Sample categories
 const categories = [
   'All',
   'React',
@@ -68,47 +16,42 @@ const categories = [
 ];
 
 const Blog = () => {
-  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(blogPosts);
+  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  useEffect(() => {
+    setFilteredPosts(getAllBlogPosts());
+  }, []);
+
   const filterPosts = (category: string) => {
     setActiveCategory(category);
-    if (category === 'All') {
-      setFilteredPosts(
-        blogPosts.filter((post) =>
-          post.title.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredPosts(
-        blogPosts.filter(
-          (post) =>
-            post.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            post.title.includes(category) || post.excerpt.includes(category)
-        )
+    let posts = filterBlogPostsByCategory(category);
+    
+    if (searchTerm) {
+      posts = posts.filter(post =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+    
+    setFilteredPosts(posts);
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
     
-    if (activeCategory === 'All') {
-      setFilteredPosts(
-        blogPosts.filter((post) =>
-          post.title.toLowerCase().includes(term.toLowerCase())
-        )
-      );
+    if (term) {
+      const searchResults = searchBlogPosts(term);
+      const categoryFiltered = activeCategory === 'All' 
+        ? searchResults 
+        : searchResults.filter(post => 
+            post.tags.some(tag => tag.toLowerCase().includes(activeCategory.toLowerCase()))
+          );
+      setFilteredPosts(categoryFiltered);
     } else {
-      setFilteredPosts(
-        blogPosts.filter(
-          (post) =>
-            post.title.toLowerCase().includes(term.toLowerCase()) &&
-            (post.title.includes(activeCategory) || post.excerpt.includes(activeCategory))
-        )
-      );
+      setFilteredPosts(filterBlogPostsByCategory(activeCategory));
     }
   };
 
@@ -129,7 +72,7 @@ const Blog = () => {
     };
     
     window.addEventListener('scroll', reveal);
-    reveal(); // Initial check
+    reveal();
     
     return () => window.removeEventListener('scroll', reveal);
   }, [filteredPosts]);
@@ -190,7 +133,7 @@ const Blog = () => {
                 onClick={() => {
                   setSearchTerm('');
                   setActiveCategory('All');
-                  setFilteredPosts(blogPosts);
+                  setFilteredPosts(getAllBlogPosts());
                 }}
                 className="mt-4 btn btn-outline"
               >
