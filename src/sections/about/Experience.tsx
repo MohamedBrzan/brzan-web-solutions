@@ -1,29 +1,31 @@
+import MarkdownRenderer from "@/components/MarkdownRenderer";
+
 const Experience = () => {
   // Sample work experience
   const experience = [
     {
-      position: "Senior Full-Stack Developer",
-      company: "Tech Solutions Inc.",
-      location: "Remote",
-      period: "2022 - Present",
+      position: "Mid-level Full-Stack Developer",
+      company: "Appout ITS",
+      location: "Egypt, Tanta - Hybrid",
+      period: "May 2024 - Present",
       description:
-        "Lead developer for multiple client projects. Designed and implemented scalable web applications using React, Node.js, and PostgreSQL. Mentored junior developers and conducted code reviews.",
+        "Developed RESTful and GraphQL APIs with Node.js and Express (35% faster throughput), optimized MongoDB queries (40% latency reduction), automated backend processes, collaborated with frontend teams, and enhanced backend performance with profiling.",
     },
     {
       position: "Full-Stack Developer",
-      company: "WebApp Innovations",
-      location: "New York, NY",
-      period: "2020 - 2022",
+      company: "Maskin",
+      location: " Remote (Saudi Arabia)",
+      period: "May 2023 - May 2024",
       description:
-        "Developed and maintained various web applications for clients in finance and healthcare. Implemented responsive UI designs and RESTful APIs.",
+        "Designed scalable microservices with Express and Docker, implemented secure RBAC using JWT and OAuth 2.0, optimized API performance, and created reusable abstractions.",
     },
     {
-      position: "Software Engineering Intern",
-      company: "Global Tech",
-      location: "Seattle, WA",
-      period: "Summer 2019",
+      position: "Software Engineering",
+      company: "High Point Tech Solutions Inc.",
+      location: " Remote (Saudi Arabia)",
+      period: "Jan 2022 - May 2023",
       description:
-        "Contributed to the development of internal tools using Vue.js and Django. Participated in agile development processes.",
+        "Built MERN backend services for 100k+ users, improved query performance with MongoDB indexing, authored Swagger API docs, wrote Jest tests, and implemented logging with Winston and Morgan.",
     },
   ];
 
@@ -51,7 +53,9 @@ const Experience = () => {
                   {job.period}
                 </span>
               </div>
-              <p className="text-muted-foreground">{job.description}</p>
+              <p className="text-muted-foreground">
+                <MarkdownRenderer content={job.description} />
+              </p>
             </div>
           ))}
         </div>

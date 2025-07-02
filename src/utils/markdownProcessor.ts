@@ -1,4 +1,3 @@
-// Simple markdown processor following KISS principle
 export const processMarkdownContent = (content: string): string => {
   return content
     .split("\n")
