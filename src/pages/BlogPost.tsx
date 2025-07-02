@@ -1,14 +1,39 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getBlogPostBySlug, getRelatedPosts } from '@/services/blogService';
-import { processMarkdownContent } from '@/utils/markdownProcessor';
+import { getBlogPostBySlug, getRelatedPosts, BlogPost as BlogPostType } from '@/services/blogService';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 const BlogPost = () => {
   const { slug } = useParams();
-  const post = slug ? getBlogPostBySlug(slug) : null;
+  const [post, setPost] = useState<BlogPostType | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      if (!slug) return;
+      
+      setLoading(true);
+      const blogPost = await getBlogPostBySlug(slug);
+      setPost(blogPost);
+      setLoading(false);
+    };
+
+    loadPost();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading article...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -91,50 +116,47 @@ const BlogPost = () => {
       <section className="py-16">
         <div className="container">
           <div className="max-w-4xl mx-auto">
-            <div 
-              className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-code:text-primary prose-pre:bg-card prose-pre:border"
-              dangerouslySetInnerHTML={{ 
-                __html: processMarkdownContent(post.content)
-              }}
-            />
+            <MarkdownRenderer content={post.content} />
           </div>
         </div>
       </section>
 
       {/* Related Posts Section */}
-      <section className="py-16 bg-card/30">
-        <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8">Related Articles</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-              {relatedPosts.map((relatedPost) => (
-                <Link 
-                  key={relatedPost.id} 
-                  to={`/blog/${relatedPost.slug}`}
-                  className="block group"
-                >
-                  <div className="bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10">
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={relatedPost.image}
-                        alt={relatedPost.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
+      {relatedPosts.length > 0 && (
+        <section className="py-16 bg-card/30">
+          <div className="container">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold mb-8">Related Articles</h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                {relatedPosts.map((relatedPost) => (
+                  <Link 
+                    key={relatedPost.id} 
+                    to={`/blog/${relatedPost.slug}`}
+                    className="block group"
+                  >
+                    <div className="bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10">
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={relatedPost.image}
+                          alt={relatedPost.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="p-6">
+                        <div className="text-sm text-muted-foreground mb-2">{relatedPost.date}</div>
+                        <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                          {relatedPost.title}
+                        </h3>
+                        <p className="text-muted-foreground line-clamp-3">{relatedPost.excerpt}</p>
+                      </div>
                     </div>
-                    <div className="p-6">
-                      <div className="text-sm text-muted-foreground mb-2">{relatedPost.date}</div>
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        {relatedPost.title}
-                      </h3>
-                      <p className="text-muted-foreground line-clamp-3">{relatedPost.excerpt}</p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Newsletter CTA */}
       <section className="py-16">
