@@ -1,0 +1,214 @@
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  readTime: string;
+  image: string;
+  tags: string[];
+  category: string;
+}
+
+const blogPosts: BlogPost[] = [
+  {
+    id: 1,
+    title: "Implementing Authentication with JWT in Node.js",
+    slug: "implementing-authentication-with-jwt",
+    excerpt:
+      "Learn how to implement secure JWT-based authentication in Node.js applications with best practices and real-world examples.",
+    content:
+      "# Implementing Authentication with JWT in Node.js\n\nAuthentication is a core component of modern web applications. One of the most popular methods for stateless authentication is **JWT (JSON Web Tokens)**. In this post, we'll explore how to implement JWT-based authentication in a Node.js environment using Express.\n\n---\n\n## 🔐 What is JWT?\n\n**JWT** (JSON Web Token) is an open standard (RFC 7519) that defines a compact, self-contained way for securely transmitting information between parties as a JSON object. It is commonly used for:\n\n- Authorization\n- Information exchange\n\nA typical JWT consists of three parts:\n\n```text\nxxxxx.yyyyy.zzzzz\n```\n\n- **Header** – contains metadata (e.g., token type and hashing algorithm)\n- **Payload** – contains claims like `userId`, `email`, etc.\n- **Signature** – ensures the token hasn’t been altered\n\n---\n\n## 🛠 Prerequisites\n\nEnsure you have the following installed:\n\n- Node.js (v14+)\n- npm or yarn\n- A basic understanding of Express.js\n\n---\n\n## 📦 Setting Up the Project\n\n```bash\nmkdir jwt-auth-node\ncd jwt-auth-node\nnpm init -y\nnpm install express jsonwebtoken bcryptjs dotenv\nnpm install --save-dev nodemon\n```\n\nCreate a `.env` file for storing your JWT secret:\n\n```env\nPORT=5000\nJWT_SECRET=your_jwt_secret_key\n```\n\n---\n\n## 📁 Project Structure\n\n```text\njwt-auth-node/\n├── controllers/\n│   └── authController.js\n├── middleware/\n│   └── auth.js\n├── routes/\n│   └── auth.js\n├── .env\n├── app.js\n└── package.json\n```\n\n---\n\n## 🧪 Basic JWT Authentication Flow\n\n1. User registers (password is hashed)\n2. User logs in (JWT token is issued)\n3. Protected routes check for valid token\n\n---\n\n## ✍️ 1. Creating the Express App (`app.js`)\n\n```js\nrequire('dotenv').config();\nconst express = require('express');\nconst authRoutes = require('./routes/auth');\n\nconst app = express();\napp.use(express.json());\n\napp.use('/api/auth', authRoutes);\n\nconst PORT = process.env.PORT || 5000;\napp.listen(PORT, () => console.log(`Server running on port ${PORT}`));\n```\n\n---\n\n## 👥 2. Auth Routes (`routes/auth.js`)\n\n```js\nconst express = require('express');\nconst { register, login, protectedRoute } = require('../controllers/authController');\nconst authMiddleware = require('../middleware/auth');\n\nconst router = express.Router();\n\nrouter.post('/register', register);\nrouter.post('/login', login);\nrouter.get('/protected', authMiddleware, protectedRoute);\n\nmodule.exports = router;\n```\n\n---\n\n## 🔐 3. Controller Logic (`controllers/authController.js`)\n\n```js\nconst jwt = require('jsonwebtoken');\nconst bcrypt = require('bcryptjs');\n\nconst users = []; // In-memory for demo\n\nconst register = async (req, res) => {\n  const { username, password } = req.body;\n  const hashedPassword = await bcrypt.hash(password, 10);\n\n  users.push({ username, password: hashedPassword });\n  res.status(201).json({ message: 'User registered successfully' });\n};\n\nconst login = async (req, res) => {\n  const { username, password } = req.body;\n  const user = users.find(u => u.username === username);\n\n  if (!user || !(await bcrypt.compare(password, user.password))) {\n    return res.status(401).json({ message: 'Invalid credentials' });\n  }\n\n  const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });\n  res.json({ token });\n};\n\nconst protectedRoute = (req, res) => {\n  res.json({ message: 'Welcome to protected route', user: req.user });\n};\n\nmodule.exports = { register, login, protectedRoute };\n```\n\n---\n\n## 🧱 4. JWT Middleware (`middleware/auth.js`)\n\n```js\nconst jwt = require('jsonwebtoken');\n\nmodule.exports = (req, res, next) => {\n  const authHeader = req.headers['authorization'];\n  const token = authHeader?.split(' ')[1];\n\n  if (!token) return res.sendStatus(401);\n\n  try {\n    const decoded = jwt.verify(token, process.env.JWT_SECRET);\n    req.user = decoded;\n    next();\n  } catch (err) {\n    res.sendStatus(403);\n  }\n};\n```\n\n---\n\n## 🔄 Sample Request Flow\n\n### 📝 Register\n\n```http\nPOST /api/auth/register\nContent-Type: application/json\n\n{\n  \"username\": \"john_doe\",\n  \"password\": \"securePass123\"\n}\n```\n\n### 🔐 Login\n\n```http\nPOST /api/auth/login\nContent-Type: application/json\n\n{\n  \"username\": \"john_doe\",\n  \"password\": \"securePass123\"\n}\n```\n\n### 🔓 Access Protected Route\n\n```http\nGET /api/auth/protected\nAuthorization: Bearer <your_token>\n```\n\n---\n\n## ✅ Best Practices\n\n- **Store JWT secret securely** – use environment variables.\n- **Use HTTPS** to prevent token theft.\n- **Set short expiration time** and refresh tokens if needed.\n- **Don’t store sensitive data** (like passwords) in the token payload.\n- **Use secure cookies** or `Authorization` headers to transmit tokens.\n\n---\n\n## 🧠 Conclusion\n\nJWT offers a simple and scalable solution for stateless authentication in modern web apps. By following the example above, you’ve learned how to:\n\n- Securely register and log in users\n- Generate and verify JWTs\n- Protect routes using middleware\n\nNext steps could include integrating a **database**, **refresh token strategy**, and **role-based access control**.\n\n---\n\n## 🔗 Further Reading\n\n- [JWT.io](https://jwt.io/)\n- [jsonwebtoken (npm)](https://www.npmjs.com/package/jsonwebtoken)\n- [bcryptjs (npm)](https://www.npmjs.com/package/bcryptjs)\n- [Express.js Docs](https://expressjs.com/)\n- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)",
+    date: "March 15, 2024",
+    readTime: "8 min read",
+    image: "/placeholder.svg",
+    tags: ["Node.js", "JWT", "Authentication", "Security"],
+    category: "Node.js",
+  },
+  {
+    id: 2,
+    title: "Building Scalable React Applications",
+    slug: "building-scalable-react-applications",
+    excerpt:
+      "Best practices and patterns for building React applications that scale with your team and user base.",
+    content:
+      "# Building Scalable React Applications\n\nAs React applications grow in size and complexity, scalability becomes a critical factor. Whether you're building a startup MVP or a long-term enterprise-grade product, architecting your React codebase with scalability in mind will help you avoid tech debt, improve maintainability, and empower larger teams to collaborate effectively.\n\nIn this article, we'll explore **best practices, architectural decisions, and practical techniques** to help you build React apps that scale seamlessly.\n\n---\n\n## 🚀 What Does Scalability Mean in React?\n\nScalability in frontend applications generally means:\n\n- Handling growing **code complexity**\n- Supporting **larger teams** without stepping on each other’s toes\n- Maintaining **performance** and **reusability**\n- Keeping onboarding and maintenance simple\n\nIn the context of React, scalability spans:\n\n- Code structure & file organization\n- Component design patterns\n- State management strategy\n- Dependency isolation\n- Performance optimization\n\n---\n\n## 📁 1. Project Structure and Modularity\n\nAvoid the default flat `components` folder. Instead, organize your app **by feature or domain**:\n\n```text\nsrc/\n├── features/\n│   ├── auth/\n│   │   ├── components/\n│   │   ├── hooks/\n│   │   └── authSlice.ts\n│   ├── dashboard/\n│   │   ├── components/\n│   │   └── Dashboard.tsx\n├── shared/\n│   ├── ui/\n│   ├── hooks/\n│   └── utils/\n├── services/\n│   └── api.ts\n├── App.tsx\n└── main.tsx\n```\n\n> ✅ Tip: Group related logic (components, hooks, state, styles) into **feature folders** to improve separation of concerns.\n\n---\n\n## ⚛️ 2. Component Design Patterns\n\nFocus on **reusability** and **testability** by following these patterns:\n\n- **Presentational vs Container Components**\n- **Compound Components** for shared context\n- **Render Props / Custom Hooks** for logic sharing\n\nExample: using a custom hook for data fetching:\n\n```tsx\n// useUser.ts\nimport { useEffect, useState } from 'react';\n\nexport function useUser(userId: string) {\n  const [user, setUser] = useState(null);\n\n  useEffect(() => {\n    fetch(`/api/users/${userId}`)\n      .then(res => res.json())\n      .then(setUser);\n  }, [userId]);\n\n  return user;\n}\n```\n\nThis allows you to reuse `useUser()` in any component without duplicating logic.\n\n---\n\n## 🌐 3. State Management Strategy\n\nReact offers several state options:\n\n- **Local state** with `useState`, `useReducer`\n- **Context API** for global shared state\n- **External state libraries** like:\n  - [Zustand](https://zustand-demo.pmnd.rs/)\n  - [Redux Toolkit](https://redux-toolkit.js.org/)\n  - [Jotai](https://jotai.org/)\n  - [Recoil](https://recoiljs.org/)\n\n> 🧠 Use local state where possible. Reach for global state only when multiple parts of the app depend on shared data.\n\n---\n\n## 🌍 4. API Layer Abstraction\n\nAvoid scattering `fetch` or `axios` calls across components.\n\nInstead, centralize API logic:\n\n```ts\n// services/api.ts\nimport axios from 'axios';\n\nexport const api = axios.create({\n  baseURL: '/api',\n});\n\nexport const getUser = (id: string) => api.get(`/users/${id}`);\n```\n\nAnd use it in hooks:\n\n```ts\nimport { useQuery } from '@tanstack/react-query';\nimport { getUser } from '@/services/api';\n\nexport function useUser(id: string) {\n  return useQuery(['user', id], () => getUser(id));\n}\n```\n\nThis abstraction helps you:\n\n- Easily mock in tests\n- Add retry/timeout logic\n- Centralize error handling\n\n---\n\n## 🎯 5. Component Libraries & Design Systems\n\nAs your app scales, consistency becomes key.\n\n- Choose a UI framework: [MUI](https://mui.com/), [Chakra UI](https://chakra-ui.com/), [Tailwind CSS](https://tailwindcss.com/)\n- Build **reusable UI primitives** (Button, Modal, Input)\n- Define global themes, spacing, colors, typography tokens\n\n> 💡 Consider tools like [Storybook](https://storybook.js.org/) to document and test your component system.\n\n---\n\n## 📦 6. Code Splitting & Lazy Loading\n\nUse dynamic imports to reduce initial bundle size:\n\n```tsx\nimport dynamic from 'next/dynamic';\n\nconst HeavyComponent = dynamic(() => import('./HeavyComponent'), {\n  loading: () => <p>Loading...</p>,\n});\n```\n\nAlso apply React features like:\n\n- `React.lazy`\n- `Suspense`\n- Route-level code splitting with frameworks like **Next.js**\n\n---\n\n## ✅ 7. Testing & Type Safety\n\nScale with confidence by investing in tests and types:\n\n- Use **TypeScript** across the project\n- Use **React Testing Library** for unit and integration tests\n- Use **Jest** for backend logic and mocks\n\nBasic component test:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport Button from './Button';\n\ntest('renders button text', () => {\n  render(<Button>Click me</Button>);\n  expect(screen.getByText('Click me')).toBeInTheDocument();\n});\n```\n\n---\n\n## 🧪 8. Linting, Formatting & CI\n\nEnsure consistency with tools like:\n\n- ESLint + Prettier\n- Git hooks (e.g. Husky, lint-staged)\n- CI tools (e.g. GitHub Actions, Vercel CI)\n\nExample `.eslintrc.json`:\n\n```json\n{\n  \"extends\": [\"next/core-web-vitals\", \"plugin:@typescript-eslint/recommended\"]\n}\n```\n\n---\n\n## 🧠 Conclusion\n\nScalability isn't just about performance—it's about **maintainability, readability, and predictability** as your codebase and team grow.\n\nBy applying the practices above, you can:\n\n- Architect better project structures\n- Write reusable, testable, and maintainable code\n- Improve developer experience and reduce bugs\n- Future-proof your application\n\n---\n\n## 🔗 Further Reading\n\n- [React Official Docs](https://react.dev/)\n- [React Folder Structure Guide](https://reactjs.org/docs/faq-structure.html)\n- [Zustand for State Management](https://github.com/pmndrs/zustand)\n- [Storybook for Component Systems](https://storybook.js.org/)\n- [React Query](https://tanstack.com/query)\n",
+    date: "March 10, 2024",
+    readTime: "12 min read",
+    image: "/placeholder.svg",
+    tags: ["React", "Architecture", "Scalability", "Best Practices"],
+    category: "React",
+  },
+  {
+    id: 3,
+    title: "Database Optimization Techniques",
+    slug: "database-optimization-techniques",
+    excerpt:
+      "Advanced techniques for optimizing database performance in production applications.",
+    content: `# Database Optimization Techniques
+
+Database performance is crucial for application scalability. Here are key optimization strategies:
+
+## Indexing Strategies
+
+Proper indexing can dramatically improve query performance:
+
+\`\`\`sql
+-- Create composite index for common query patterns
+CREATE INDEX idx_user_status_created 
+ON users (status, created_at);
+
+-- Partial index for specific conditions
+CREATE INDEX idx_active_users 
+ON users (email) 
+WHERE status = 'active';
+\`\`\`
+
+## Query Optimization
+
+Always analyze your queries:
+
+\`\`\`sql
+-- Use EXPLAIN to understand query execution
+EXPLAIN ANALYZE 
+SELECT u.name, p.title 
+FROM users u 
+JOIN posts p ON u.id = p.user_id 
+WHERE u.status = 'active';
+\`\`\`
+
+## Connection Pooling
+
+Implement proper connection pooling:
+
+\`\`\`javascript
+const pool = new Pool({
+  host: 'localhost',
+  user: 'database-user',
+  password: 'database-password',
+  database: 'database-name',
+  max: 20, // Maximum connections in pool
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+\`\`\`
+
+These techniques can significantly improve your database performance.`,
+    date: "March 5, 2024",
+    readTime: "10 min read",
+    image: "/placeholder.svg",
+    tags: ["Database", "SQL", "Performance", "Optimization"],
+    category: "Database",
+  },
+  {
+    id: 4,
+    title: "Building Real-Time Applications with Socket.io",
+    slug: "real-time-applications-with-socketio",
+    excerpt:
+      "Learn how to build scalable, real-time web applications using Socket.io. We cover setup, core concepts, and best practices for delivering interactive user experiences.",
+    content:
+      "# Building Real-Time Applications with Socket.io\n\nReal-time web applications are becoming essential in modern software — from messaging platforms to collaborative tools, live dashboards, multiplayer games, and beyond. At the heart of many of these systems is **Socket.io**, a powerful JavaScript library that enables bi-directional, event-based communication between the browser and the server.\n\nIn this article, we'll explore the core features of Socket.io, its setup in a Node.js environment, and how to build real-time functionality into your applications.\n\n---\n\n## 🚀 What is Socket.io?\n\n**Socket.io** is a JavaScript library for real-time web applications. It enables **real-time, bidirectional, event-based communication** between clients and servers using **WebSockets** or **fallback HTTP long polling** when necessary.\n\nKey benefits include:\n\n- Cross-browser support\n- Automatic reconnection\n- Multiplexing support\n- Room and namespace abstraction\n- Middleware support on both client and server\n\n---\n\n## 🧱 How Does Socket.io Work?\n\nSocket.io consists of two parts:\n\n- **Server-side library** (Node.js)\n- **Client-side library** (browser)\n\nIt abstracts WebSocket protocols and handles connection fallbacks automatically.\n\nThe basic communication looks like this:\n\n```txt\nClient ↔️ Server (via WebSocket)\n```\n\nWhen WebSocket isn’t available, it transparently falls back to HTTP long polling.\n\n---\n\n## 📦 Installation\n\nInstall both server and client libraries:\n\n```bash\nnpm install socket.io\nnpm install socket.io-client\n```\n\n---\n\n## ✍️ Basic Server Setup\n\n```js\n// server.js\nconst express = require('express');\nconst http = require('http');\nconst { Server } = require('socket.io');\n\nconst app = express();\nconst server = http.createServer(app);\nconst io = new Server(server);\n\nio.on('connection', (socket) => {\n  console.log('User connected:', socket.id);\n\n  socket.on('message', (data) => {\n    console.log('Received:', data);\n    io.emit('message', data); // Broadcast to all\n  });\n\n  socket.on('disconnect', () => {\n    console.log('User disconnected:', socket.id);\n  });\n});\n\nserver.listen(3000, () => console.log('Server running on http://localhost:3000'));\n```\n\n---\n\n## 🧑‍💻 Client Setup\n\n```html\n<!-- index.html -->\n<!DOCTYPE html>\n<html>\n<head><title>Socket.io Chat</title></head>\n<body>\n  <input id=\"msgInput\" />\n  <button onclick=\"sendMessage()\">Send</button>\n  <ul id=\"messages\"></ul>\n\n  <script src=\"/socket.io/socket.io.js\"></script>\n  <script>\n    const socket = io();\n\n    socket.on('message', (data) => {\n      const li = document.createElement('li');\n      li.innerText = data;\n      document.getElementById('messages').appendChild(li);\n    });\n\n    function sendMessage() {\n      const msg = document.getElementById('msgInput').value;\n      socket.emit('message', msg);\n    }\n  </script>\n</body>\n</html>\n```\n\n---\n\n## 🧩 Key Concepts\n\n### 🔄 Events\n- Custom event types can be defined (`'chat'`, `'typing'`, etc.)\n- Use `socket.emit()` to send and `socket.on()` to receive\n\n### 🏠 Rooms\nLet users join rooms to segment communication:\n\n```js\nsocket.join('room1');\nio.to('room1').emit('message', 'Welcome to room1');\n```\n\n### 🧠 Namespaces\nLogical separation of sockets:\n\n```js\nconst adminNamespace = io.of('/admin');\nadminNamespace.on('connection', socket => {\n  console.log('Admin connected');\n});\n```\n\n### 🔐 Authentication\nPass tokens during connection:\n\n```js\nconst socket = io({\n  auth: { token: 'your_token_here' }\n});\n```\n\nOn the server:\n```js\nio.use((socket, next) => {\n  const token = socket.handshake.auth.token;\n  if (isValid(token)) next();\n  else next(new Error('Unauthorized'));\n});\n```\n\n---\n\n## 🧪 Best Practices\n\n- **Use middleware** for auth and validation\n- **Handle reconnections** and edge cases\n- **Avoid memory leaks** — always clean up listeners\n- **Use rooms** for scalability\n- **Throttle events** to prevent abuse\n\n---\n\n## 🧠 Conclusion\n\nSocket.io makes it easy to integrate real-time features in modern web applications. Whether you're building chat apps, games, or live dashboards, it provides the tools to manage connections, broadcast events, and scale efficiently.\n\nWith its fallback support and developer-friendly API, it's a great choice for real-time functionality in full-stack JavaScript projects.\n\n---\n\n## 🔗 Further Reading\n\n- [Socket.io Documentation](https://socket.io/docs/)\n- [Scaling Socket.io with Redis](https://socket.io/docs/v4/using-multiple-nodes/)\n- [WebSockets vs Socket.io](https://ably.com/blog/websockets-vs-socket-io)\n- [Real-Time Node.js Architecture](https://nodejs.org/en/learn/)\n",
+    date: "March 18, 2024",
+    readTime: "10 min read",
+    image: "/placeholder.svg",
+    tags: ["Real-Time", "Socket.io", "Node.js", "WebSockets"],
+    category: "WebSockets",
+  },
+  {
+    id: 5,
+    title: "Microservices vs Monoliths: Choosing the Right Architecture",
+    slug: "microservices-vs-monoliths",
+    excerpt:
+      "Understand the trade-offs between monolithic and microservices architectures. Learn when to use each, their pros and cons, and how to make an informed architectural decision for your team.",
+    content:
+      "# Microservices vs Monoliths: Choosing the Right Architecture\n\nChoosing the right architectural pattern for your application is a critical decision that impacts development speed, scalability, and long-term maintainability. Two primary models dominate the landscape: **monoliths** and **microservices**.\n\nIn this article, we’ll explore both architectures, compare their strengths and weaknesses, and guide you on when and why to choose one over the other.\n\n---\n\n## 🧱 What is a Monolith?\n\nA **monolithic architecture** is a single unified codebase where all application logic — including UI, business logic, and data access — is bundled and deployed together.\n\n### ✅ Benefits of Monoliths\n- **Simplicity**: Easier to build, test, and deploy initially\n- **Less operational overhead**: Single codebase and process\n- **Faster initial development**: Especially for small teams and MVPs\n\n### ❌ Drawbacks\n- **Scalability bottlenecks**: You must scale the whole app, even if only one part needs it\n- **Tight coupling**: Code becomes interdependent over time, slowing development\n- **Long deployment cycles**: A change in one area requires full redeployment\n\n---\n\n## 🧩 What are Microservices?\n\nA **microservices architecture** breaks down the application into small, independent services that communicate over a network (typically via HTTP or message queues).\n\nEach service:\n- Has a single, focused responsibility (e.g., user, billing, notifications)\n- Is developed, tested, deployed, and scaled independently\n- Often has its own database (polyglot persistence)\n\n### ✅ Benefits of Microservices\n- **Independent scalability**: Scale services individually based on demand\n- **Team autonomy**: Teams own specific services with independent deployment pipelines\n- **Improved fault isolation**: A failure in one service doesn’t crash the whole system\n- **Technology flexibility**: Each service can use different languages, frameworks, or databases\n\n### ❌ Drawbacks\n- **Complexity**: Requires orchestration, service discovery, logging, monitoring, etc.\n- **Distributed system challenges**: Network latency, retries, eventual consistency\n- **DevOps overhead**: CI/CD pipelines, deployment scripts, and infrastructure multiply\n\n---\n\n## ⚖️ Key Differences\n\n| Feature                    | Monolith                            | Microservices                       |\n|---------------------------|--------------------------------------|-------------------------------------|\n| Deployment               | Single unit                          | Independently deployable services   |\n| Scalability              | Whole app                           | Per service                         |\n| Fault Isolation          | Low                                  | High                                |\n| DevOps Complexity        | Low                                  | High                                |\n| Onboarding               | Simple (one codebase)               | Complex (multiple repos/services)   |\n| Best for                 | Small teams, MVPs, internal tools   | Large apps, distributed teams       |\n\n---\n\n## 🧠 When to Choose What?\n\n### ✅ Choose **Monolith** if:\n- You’re building an MVP or prototype\n- You have a small team\n- Speed of delivery is more important than flexibility\n- Operational overhead must be minimal\n\n### ✅ Choose **Microservices** if:\n- Your app is growing in complexity and scale\n- You need to scale components independently\n- You have multiple teams working in parallel\n- You want to adopt CI/CD and DevOps culture\n\n> ⚠️ Don’t start with microservices unless you absolutely need them. Many teams **prematurely over-engineer** and end up with operational complexity that outweighs the benefits.\n\n---\n\n## 🧪 Migration Strategy: Monolith ➜ Microservices\n\nMany companies start with a monolith and **gradually refactor** into microservices:\n\n1. **Modularize your monolith** (e.g., domain-based folders/modules)\n2. Extract well-defined, low-coupled modules into services\n3. Build infrastructure: API gateway, service discovery, observability, etc.\n4. Move incrementally — one service at a time\n\n---\n\n## 🛠 Tools and Ecosystem\n\n- **API Gateways**: Kong, NGINX, AWS API Gateway\n- **Service Communication**: gRPC, REST, Message Queues (Kafka, RabbitMQ)\n- **Containerization**: Docker\n- **Orchestration**: Kubernetes, Docker Swarm\n- **Monitoring & Logging**: Prometheus, Grafana, ELK Stack, Jaeger\n\n---\n\n## 🧠 Conclusion\n\nThere is no one-size-fits-all architecture. Your choice between **monoliths and microservices** should be guided by:\n\n- Team size and structure\n- Application complexity and growth expectations\n- Operational maturity and infrastructure capabilities\n\nStart simple. **Evolve your architecture based on real needs** rather than trends.\n\n---\n\n## 🔗 Further Reading\n\n- [Martin Fowler on Microservices](https://martinfowler.com/articles/microservices.html)\n- [12 Factor App Principles](https://12factor.net/)\n- [MonolithFirst by ThoughtWorks](https://www.thoughtworks.com/insights/blog/microservices-prerequisite)\n- [Building Microservices by Sam Newman](https://www.oreilly.com/library/view/building-microservices/9781491950340/)\n- [AWS Microservices Guide](https://aws.amazon.com/microservices/)\n",
+    date: "March 20, 2024",
+    readTime: "9 min read",
+    image: "/placeholder.svg",
+    tags: ["Architecture", "Microservices", "Monolith", "Software Design"],
+    category: "Architecture",
+  },
+  {
+    id: 6,
+    title: "Advanced TypeScript Patterns for React Developers",
+    slug: "advanced-typescript-patterns-for-react",
+    excerpt:
+      "Level up your React applications with advanced TypeScript techniques, including discriminated unions, mapped types, polymorphic components, and type-safe component patterns.",
+    content:
+      "# Advanced TypeScript Patterns for React Developers\n\nTypeScript is a powerful addition to the React ecosystem, offering static type safety and improved developer experience. But beyond basic props typing, TypeScript can be leveraged in advanced ways to make your React codebase more robust, scalable, and maintainable.\n\nIn this article, we’ll explore advanced TypeScript patterns and techniques tailored specifically for React developers.\n\n---\n\n## ⚙️ 1. Discriminated Unions for Conditional Props\n\nDiscriminated unions are perfect for components that have mutually exclusive props.\n\n```tsx\ntype ButtonProps =\n  | { variant: 'icon'; icon: React.ReactNode; label?: never }\n  | { variant: 'text'; label: string; icon?: never };\n\nconst Button: React.FC<ButtonProps> = (props) => {\n  if (props.variant === 'icon') {\n    return <button>{props.icon}</button>;\n  }\n  return <button>{props.label}</button>;\n};\n```\n\n### ✅ Why it works:\n- Enforces **mutual exclusivity** at compile time\n- Prevents accidental misuse of props\n\n---\n\n## 🔁 2. Mapped Types for Form Components\n\nUse mapped types to create **strongly-typed form handlers** based on a data model.\n\n```ts\ntype FormData = {\n  name: string;\n  age: number;\n};\n\nconst [form, setForm] = useState<FormData>({ name: '', age: 0 });\n\nfunction handleChange<K extends keyof FormData>(key: K, value: FormData[K]) {\n  setForm(prev => ({ ...prev, [key]: value }));\n}\n```\n\n### 🔐 Benefits:\n- Type-safe access to keys and values\n- Helps prevent mismatched types in form updates\n\n---\n\n## 🧠 3. Polymorphic Components with Generics\n\nCreate reusable components that can render as different HTML elements using the `as` prop.\n\n```tsx\ntype PolymorphicProps<E extends React.ElementType> = {\n  as?: E;\n  children: React.ReactNode;\n} & React.ComponentPropsWithoutRef<E>;\n\nconst Box = <E extends React.ElementType = 'div'>({ as, children, ...rest }: PolymorphicProps<E>) => {\n  const Component = as || 'div';\n  return <Component {...rest}>{children}</Component>;\n};\n\n<Box as=\"a\" href=\"#\">Link Box</Box>\n```\n\n### 🧰 Use cases:\n- Buttons, links, headings with dynamic tags\n- Reduces component duplication\n\n---\n\n## 🧬 4. Type-Safe Context APIs\n\nAvoid `any` in context by creating a properly typed context API.\n\n```ts\ntype ThemeContextType = {\n  theme: 'light' | 'dark';\n  toggleTheme: () => void;\n};\n\nconst ThemeContext = React.createContext<ThemeContextType | undefined>(undefined);\n\nexport const useTheme = () => {\n  const ctx = useContext(ThemeContext);\n  if (!ctx) throw new Error('useTheme must be used within a ThemeProvider');\n  return ctx;\n};\n```\n\n### 🔐 Why it matters:\n- Prevents `undefined` access errors\n- Helps IDEs provide better autocomplete\n\n---\n\n## 🧰 5. Utility Types for Prop Management\n\nUse built-in and custom utility types to manage props across components.\n\n### Example: `Omit`\n\n```ts\ntype InputProps = React.InputHTMLAttributes<HTMLInputElement>;\n\ntype CustomInputProps = Omit<InputProps, 'onChange'> & {\n  onChange: (value: string) => void;\n};\n\nconst Input: React.FC<CustomInputProps> = ({ onChange, ...rest }) => {\n  return <input {...rest} onChange={(e) => onChange(e.target.value)} />;\n};\n```\n\n### 🧩 Other useful types:\n- `Pick<T, K>`\n- `Partial<T>`\n- `Required<T>`\n- `Record<K, T>`\n\n---\n\n## 📦 Bonus: Prop Inference with `React.ComponentProps`\n\nUse component prop types without duplication:\n\n```ts\ntype ButtonProps = React.ComponentProps<'button'> & {\n  variant?: 'primary' | 'secondary';\n};\n\nconst Button: React.FC<ButtonProps> = ({ variant = 'primary', ...rest }) => {\n  return <button className={`btn-${variant}`} {...rest} />;\n};\n```\n\n### ✅ Why it helps:\n- Ensures native props stay in sync\n- Eliminates redundant typing\n\n---\n\n## 🧠 Conclusion\n\nAdvanced TypeScript patterns elevate your React codebase by increasing **type safety**, **reusability**, and **developer confidence**.\n\nBy embracing these techniques:\n- You'll reduce bugs before runtime\n- Improve collaboration across teams\n- Make your components more scalable and maintainable\n\n---\n\n## 🔗 Further Reading\n\n- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)\n- [TypeScript Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html)\n- [Effective TypeScript](https://www.oreilly.com/library/view/effective-typescript/9781492053736/)\n- [Polymorphic Components in TypeScript](https://blog.logrocket.com/building-polymorphic-components-react-typescript/)",
+    date: "March 22, 2024",
+    readTime: "10 min read",
+    image: "/placeholder.svg",
+    tags: ["TypeScript", "React", "Advanced Patterns", "Component Design"],
+    category: "React",
+  },
+];
+
+// Function to load markdown content dynamically
+const loadMarkdownContent = async (slug: string): Promise<string> => {
+  try {
+    const response = await fetch(`/src/content/${slug}.md`);
+    if (response.ok) {
+      return await response.text();
+    }
+  } catch (error) {
+    console.error(`Failed to load content for ${slug}:`, error);
+  }
+
+  // Fallback to inline content
+  const post = blogPosts.find((p) => p.slug === slug);
+  return post?.content || "";
+};
+
+export const getAllBlogPosts = (): BlogPost[] => {
+  return blogPosts;
+};
+
+export const getBlogPostBySlug = async (
+  slug: string
+): Promise<BlogPost | null> => {
+  const post = blogPosts.find((p) => p.slug === slug);
+  if (!post) return null;
+
+  // Load markdown content if not already loaded
+  if (!post.content) {
+    post.content = await loadMarkdownContent(slug);
+  }
+
+  return post;
+};
+
+export const getRelatedPosts = (currentSlug: string): BlogPost[] => {
+  const currentPost = blogPosts.find((p) => p.slug === currentSlug);
+  if (!currentPost) return [];
+
+  return blogPosts
+    .filter(
+      (post) =>
+        post.slug !== currentSlug &&
+        post.tags.some((tag) => currentPost.tags.includes(tag))
+    )
+    .slice(0, 2);
+};
+
+export const searchBlogPosts = (query: string): BlogPost[] => {
+  const lowercaseQuery = query.toLowerCase();
+  return blogPosts.filter(
+    (post) =>
+      post.title.toLowerCase().includes(lowercaseQuery) ||
+      post.excerpt.toLowerCase().includes(lowercaseQuery) ||
+      post.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
+  );
+};
+
+export const filterBlogPostsByCategory = (category: string): BlogPost[] => {
+  if (category === "All") return blogPosts;
+  return blogPosts.filter(
+    (post) =>
+      post.category === category ||
+      post.tags.some((tag) =>
+        tag.toLowerCase().includes(category.toLowerCase())
+      )
+  );
+};
