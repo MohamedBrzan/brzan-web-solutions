@@ -5,7 +5,6 @@ const Bio = () => {
       category: "Frontend",
       items: [
         "React",
-        "Vue.js",
         "Angular",
         "Next.js",
         "Tailwind CSS",
@@ -13,21 +12,41 @@ const Bio = () => {
         "Redux",
       ],
     },
+    // {
+    //   category: "Backend",
+    //   items: ["Node.js", "Express.js", "Django", "Laravel", "ASP.NET Core"],
+    // },
     {
       category: "Backend",
-      items: ["Node.js", "Express.js", "Django", "Laravel", "ASP.NET Core"],
+      items: ["Node.js", "Express.js", "Next.js"],
+    },
+    // {
+    //   category: "Databases",
+    //   items: ["MongoDB", "PostgreSQL", "MySQL", "Firebase", "Redis"],
+    // },
+    {
+      category: "Unit Testing",
+      items: ["Jest"],
     },
     {
       category: "Databases",
-      items: ["MongoDB", "PostgreSQL", "MySQL", "Firebase", "Redis"],
+      items: ["MongoDB", "PostgreSQL", "Redis"],
     },
+    // {
+    //   category: "DevOps",
+    //   items: ["Docker", "Kubernetes", "AWS", "CI/CD", "GitHub Actions"],
+    // },
     {
       category: "DevOps",
-      items: ["Docker", "Kubernetes", "AWS", "CI/CD", "GitHub Actions"],
+      items: ["Docker"],
     },
+    // {
+    //   category: "Tools & Methods",
+    //   items: ["Git", "Agile/Scrum", "TDD", "REST", "GraphQL"],
+    // },
     {
       category: "Tools & Methods",
-      items: ["Git", "Agile/Scrum", "TDD", "REST", "GraphQL"],
+      items: ["Git", "Agile/Scrum", "REST", "GraphQL"],
     },
   ];
 
