@@ -2,18 +2,10 @@ const Education = () => {
   // Sample education
   const education = [
     {
-      degree: "Master of Science in Computer Science",
-      institution: "University of Technology",
-      location: "San Francisco, CA",
-      period: "2018 - 2020",
-      description:
-        "Specialized in Software Engineering with focus on distributed systems and cloud computing.",
-    },
-    {
-      degree: "Bachelor of Science in Computer Engineering",
-      institution: "National University",
-      location: "Boston, MA",
-      period: "2014 - 2018",
+      degree: "Bachelor’s of Surveyor Engineer",
+      institution: "Tanta University",
+      location: "Egypt, Tanta",
+      period: "2014 - 2019",
       description: "Graduated with honors, with a minor in Mathematics.",
     },
   ];
