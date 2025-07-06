@@ -1,6 +1,5 @@
 import BookingForm from "@/components/BookingForm";
 import { Calendar, Clock } from "lucide-react";
-import React from "react";
 
 const BookingOptions = () => {
   return (
@@ -22,11 +21,15 @@ const BookingOptions = () => {
                       A 30-minute session to discuss your project requirements,
                       goals, and how I can help you achieve them.
                     </p>
+                    <p className="text-muted-foreground mb-2">
+                      <b className="mt-1">✨ Ideal for :</b> First-time clients
+                      exploring options
+                    </p>
                     <div className="flex items-center mt-4">
                       <Clock className="text-muted-foreground mr-2" size={16} />
                       <span className="text-muted-foreground">30 minutes</span>
                       <span className="mx-3 text-muted-foreground">•</span>
-                      <span className="font-medium">$50</span>
+                      <span className="font-medium">$30</span>
                     </div>
                   </div>
                 </div>
@@ -44,11 +47,15 @@ const BookingOptions = () => {
                       project, discuss technical approaches, timelines, and
                       deliverables.
                     </p>
+                    <p className="text-muted-foreground mb-2">
+                      <b className="mt-1">🎯 Ideal for :</b> Startups ready to
+                      formalize project
+                    </p>
                     <div className="flex items-center mt-4">
                       <Clock className="text-muted-foreground mr-2" size={16} />
                       <span className="text-muted-foreground">60 minutes</span>
                       <span className="mx-3 text-muted-foreground">•</span>
-                      <span className="font-medium">$100</span>
+                      <span className="font-medium">$60</span>
                     </div>
                   </div>
                 </div>
@@ -64,11 +71,17 @@ const BookingOptions = () => {
                       potential improvements, and provide actionable
                       recommendations.
                     </p>
+                    <p className="text-muted-foreground mb-2">
+                      <b className="mt-1">🔍 Focus Areas :</b> Performance,
+                      readability, security tips
+                      <br />
+                      <b>🧠 Ideal for :</b> junior/mid developers and CTOs
+                    </p>
                     <div className="flex items-center mt-4">
                       <Clock className="text-muted-foreground mr-2" size={16} />
                       <span className="text-muted-foreground">45 minutes</span>
                       <span className="mx-3 text-muted-foreground">•</span>
-                      <span className="font-medium">$75</span>
+                      <span className="font-medium">$50</span>
                     </div>
                   </div>
                 </div>
@@ -86,11 +99,15 @@ const BookingOptions = () => {
                       helping you improve your technical skills and overcome
                       specific challenges.
                     </p>
+                    <p className="text-muted-foreground mb-2">
+                      <b className="mt-1">👨‍🏫 Ideal for :</b> Junior devs or
+                      career transitioners
+                    </p>
                     <div className="flex items-center mt-4">
                       <Clock className="text-muted-foreground mr-2" size={16} />
                       <span className="text-muted-foreground">60 minutes</span>
                       <span className="mx-3 text-muted-foreground">•</span>
-                      <span className="font-medium">$100</span>
+                      <span className="font-medium">$75</span>
                     </div>
                   </div>
                 </div>

@@ -58,28 +58,34 @@ const Bio = () => {
             <h2 className="section-heading">My Story</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                I'm Mohamed Brzan, a Full-Stack Engineer with over 3 years of
-                experience in designing and developing web applications. My
-                journey in software development began during my university
-                years, where I discovered my passion for creating digital
-                solutions that solve real-world problems.
+                I'm <b>Mohamed Brzan</b>, a Full-Stack JavaScript Engineer with
+                over 3 years of experience building and deploying scalable web
+                applications using technologies like React, Node.js, Next.js,
+                Nest.js, and MongoDB.
               </p>
               <p>
-                After completing my Master's degree in Computer Science, I
-                worked with various companies ranging from startups to
-                established enterprises, which has given me a diverse
-                perspective on software development practices and methodologies.
+                My journey into software development began during my university
+                studies in <b>Survey Engineering</b>, where I found a deep
+                passion for building real-world digital solutions. Since then,
+                I've worked with <b>diverse companies</b> — from local teams to
+                remote international startups — delivering{" "}
+                <b>robust, production-ready applications</b> with modern
+                architectures, including{" "}
+                <b>
+                  microservices, CI/CD pipelines, and containerized deployments
+                  with Docker.
+                </b>
               </p>
               <p>
-                I specialize in building scalable web applications using modern
-                technologies and frameworks. My approach to development is
-                focused on creating clean, maintainable code that delivers
-                exceptional user experiences.
+                I specialize in creating clean, maintainable code and seamless
+                user experiences. Whether it's architecting APIs, optimizing
+                database performance, or setting up end-to-end environments, I
+                take a thoughtful, results-driven approach to every project.
               </p>
               <p>
-                When I'm not coding, you can find me exploring new technologies,
-                contributing to open-source projects, or sharing my knowledge
-                through technical articles and tutorials.
+                When I’m not writing code, I’m usually{" "}
+                <b>exploring new tech trends, contributing to open-source</b>,
+                or <b>sharing knowledge</b> through tutorials and mentorship.
               </p>
             </div>
           </div>

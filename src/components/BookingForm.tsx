@@ -35,20 +35,20 @@ const meetingTypes = [
     id: "consultation",
     label: "Consultation",
     duration: "30 min",
-    price: "$50",
+    price: "$30",
   },
   {
     id: "project-discussion",
     label: "Project Discussion",
     duration: "60 min",
-    price: "$100",
+    price: "$60",
   },
-  { id: "code-review", label: "Code Review", duration: "45 min", price: "$75" },
+  { id: "code-review", label: "Code Review", duration: "45 min", price: "$50" },
   {
     id: "mentoring",
     label: "Technical Mentoring",
     duration: "60 min",
-    price: "$100",
+    price: "$75",
   },
 ];
 

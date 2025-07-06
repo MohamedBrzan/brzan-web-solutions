@@ -20,17 +20,19 @@ const Pricing = () => {
               </span>
             </p>
             <p className="text-muted-foreground mb-6">
-              Best for smaller projects or ongoing collaboration with variable
-              scope.
+              <b>Ideal for :</b> quick fixes, short-term needs, agile startups,
+              or agencies needing expert hands.
             </p>
             <ul className="space-y-2 mb-8">
               {[
-                "Regular progress updates",
-                "Flexible scheduling options",
-                "Hourly invoicing precision",
+                "Pay-as-you-go flexibility",
                 "No long-term commitment",
-                "Great for startups and agencies",
-                "Ideal for bugs or quick features",
+                "Transparent hourly invoicing",
+                "Great for bug fixes, feature tweaks, and code reviews",
+                "Flexible scheduling for sprints or emergencies",
+                "Direct communication & fast delivery",
+                "Seamless handoff to internal teams or other vendors",
+                "Cost-effective for tasks under limited budget",
               ].map((item, idx) => (
                 <li
                   key={+idx}
@@ -52,23 +54,25 @@ const Pricing = () => {
             </div>
             <h3 className="text-2xl font-bold mb-2">Project-Based</h3>
             <p className="text-4xl font-bold text-primary mb-6">
-              $1,500–$5,000
+              $800–$8,000
               <span className="text-muted-foreground text-sm font-normal">
                 /project
               </span>
             </p>
             <p className="text-muted-foreground mb-6">
-              Fixed price based on project requirements and deliverables.
+              <b>Ideal for :</b> businesses with clear deliverables and a
+              well-defined goal.
             </p>
             <ul className="space-y-2 mb-8">
               {[
-                "Detailed proposal and clear scope",
-                "Defined budget and deliverables",
+                "Detailed project proposal with timeline & scope",
+                "Transparent fixed pricing — no surprises",
                 "Legal contract and risk protection",
-                "Scalable code and thorough testing",
-                "Milestone billing and measurable outcomes",
-                "Regular updates and open communication",
-                "Post-launch support and maintenance",
+                "Professional contract & IP protection",
+                "Scalable, tested, and maintainable codebase",
+                "Milestone-based payment & progress checkpoints",
+                "Regular updates & async check-ins",
+                "Post-launch support, bug fixes (30 days)",
               ].map((item, idx) => (
                 <li
                   key={+idx}
@@ -93,20 +97,22 @@ const Pricing = () => {
               </span>
             </p>
             <p className="text-muted-foreground mb-6">
-              Consistent support for ongoing development and maintenance needs.
+              <b>Ideal for :</b> startups scaling fast, agencies, or teams
+              needing monthly technical help.
             </p>
             <ul className="space-y-2 mb-8">
               {[
-                "Reserved development hours monthly",
-                "Priority queue for urgent tasks",
-                "Monthly progress and reports",
-                "Discounted rate for extra hours",
-                "Proactive code audits",
-                "Flexible scope per month",
-                "Ideal for scaling SaaS or teams",
+                "Reserved monthly development",
+                "Priority queue for critical tasks",
+                "Discounted hourly rate on overflow",
+                "Monthly report + insights",
+                "Code audits and performance monitoring",
+                "Adjust scope monthly to meet business needs",
+                "Long-term collaboration with aligned roadmap",
+                "Dedicated planning sessions for roadmap alignment",
               ].map((item, idx) => (
                 <li
-                  key={idx}
+                  key={+idx}
                   className="flex gap-2 items-start leading-relaxed"
                 >
                   <span className="text-primary mt-1">✓</span>
