@@ -230,7 +230,7 @@ const projects: Project[] = [
       "ApexAPI is a lightweight Apex-based tool designed to streamline interaction with Salesforce’s ConnectAPI, simplifying the retrieval of metadata and repository contents programmatically.",
     technologies: ["Nodejs", "Express.js", "MongoDB", "Docker", "Pnpm", "Git"],
     image: "/assets/images/ApexAPI.jpg",
-    githubUrl: "https://github.com/MohamedBrzan/Postgresql_APIS",
+    githubUrl: "https://github.com/MohamedBrzan/ApexAPI",
     category: "API",
   },
   {
