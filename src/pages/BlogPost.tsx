@@ -8,6 +8,17 @@ import {
   BlogPost as BlogPostType,
 } from "@/services/blogService";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
+
+// Utility to strip the first h1 if it matches the post title
+function stripFirstH1(content: string, title: string): string {
+  const h1Regex = /^#\s+(.+)\n?/i;
+  const match = content.match(h1Regex);
+  if (match && match[1].trim() === title.trim()) {
+    return content.replace(h1Regex, "");
+  }
+  return content;
+}
+
 const BlogPost = () => {
   const { slug } = useParams();
   const [post, setPost] = useState<BlogPostType | null>(null);
@@ -74,13 +85,9 @@ const BlogPost = () => {
   return (
     <article className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-96 bg-gradient-to-r from-primary/20 to-background overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{ backgroundImage: `url(${post.image})` }}
-        />
-        <div className="relative container h-full flex items-center">
-          <div className="max-w-4xl">
+      <section className="relative min-h-[28rem] sm:h-[32rem] bg-gradient-to-r from-primary/20 to-background overflow-hidden py-12">
+        <div className="relative container h-full flex flex-col justify-between z-10 sm:flex-row sm:items-end sm:justify-start">
+          <div className="max-w-full w-full flex flex-col items-start text-left gap-4 sm:max-w-4xl sm:gap-2 min-h-[18rem]">
             <Link
               to="/blog"
               className="inline-flex items-center text-primary mb-4 hover:underline"
@@ -88,23 +95,29 @@ const BlogPost = () => {
               <ArrowLeft size={16} className="mr-2" />
               Back to Blog
             </Link>
-            <div className="flex flex-wrap gap-2 mb-4">
+            {/* Category Badge */}
+            {post.category && (
+              <span className="inline-block px-3 py-1 bg-accent text-accent-foreground rounded-full text-xs font-semibold sm:text-sm sm:mb-2">
+                {post.category}
+              </span>
+            )}
+            <div className="flex flex-wrap gap-2 justify-start">
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm"
+                  className="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs sm:text-sm"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-xl font-bold break-words sm:text-2xl md:text-4xl lg:text-5xl sm:mb-2">
               {post.title}
             </h1>
-
-            <p className="text-xl text-muted-foreground mb-6">{post.excerpt}</p>
-            <div className="flex items-center gap-6 text-muted-foreground">
+            <p className="text-base text-muted-foreground max-w-xl mb-2 sm:text-lg md:text-xl sm:mb-4">
+              {post.excerpt}
+            </p>
+            <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-6 text-muted-foreground text-xs sm:text-base mt-auto">
               <div className="flex items-center gap-2">
                 <Calendar size={16} />
                 <span>{post.date}</span>
@@ -113,12 +126,11 @@ const BlogPost = () => {
                 <Clock size={16} />
                 <span>{post.readTime}</span>
               </div>
-
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleShare}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground min-w-[100px]"
               >
                 <Share2 size={16} className="mr-2" />
                 Share
@@ -126,13 +138,19 @@ const BlogPost = () => {
             </div>
           </div>
         </div>
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 z-0"
+          style={{ backgroundImage: `url(${post.image})` }}
+        />
       </section>
 
       {/* Content Section */}
       <section className="py-16">
         <div className="container">
           <div className="max-w-4xl mx-auto">
-            <MarkdownRenderer content={post.content} />
+            <MarkdownRenderer
+              content={stripFirstH1(post.content, post.title)}
+            />
           </div>
         </div>
       </section>
