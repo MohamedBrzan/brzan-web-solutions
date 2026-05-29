@@ -154,7 +154,7 @@ export const getRelatedPosts = (currentSlug: string): BlogPost[] => {
     .filter(
       (post) =>
         post.slug !== currentSlug &&
-        post.tags.some((tag) => currentPost.tags.includes(tag))
+        post.tags?.some((tag) => currentPost.tags?.includes(tag))
     )
     .slice(0, 2);
 };
@@ -165,7 +165,7 @@ export const searchBlogPosts = (query: string): BlogPost[] => {
     (post) =>
       post.title.toLowerCase().includes(lowercaseQuery) ||
       post.excerpt.toLowerCase().includes(lowercaseQuery) ||
-      post.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
+      post.tags?.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
   );
 };
 
@@ -174,7 +174,7 @@ export const filterBlogPostsByCategory = (category: string): BlogPost[] => {
   return blogPosts.filter(
     (post) =>
       post.category === category ||
-      post.tags.some((tag) =>
+      post.tags?.some((tag) =>
         tag.toLowerCase().includes(category.toLowerCase())
       )
   );

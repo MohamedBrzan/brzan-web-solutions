@@ -1,29 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Github, Linkedin, Mail } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
+import useScrollReveal from "@/hooks/useScrollReveal";
 
 const Contact = () => {
-  // Add scroll reveal animation
-  useEffect(() => {
-    const revealElements = document.querySelectorAll(".reveal");
-
-    const reveal = () => {
-      revealElements.forEach((element) => {
-        const windowHeight = window.innerHeight;
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-
-        if (elementTop < windowHeight - elementVisible) {
-          element.classList.add("active");
-        }
-      });
-    };
-
-    window.addEventListener("scroll", reveal);
-    reveal(); // Initial check
-
-    return () => window.removeEventListener("scroll", reveal);
-  }, []);
+  useScrollReveal();
 
   return (
     <div>

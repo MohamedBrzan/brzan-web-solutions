@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Clock, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import {
   getBlogPostBySlug,
   getRelatedPosts,
@@ -19,10 +20,57 @@ function stripFirstH1(content: string, title: string): string {
   return content;
 }
 
+const baseUrl = import.meta.env.VITE_BASE_URL || "";
+
 const BlogPost = () => {
   const { slug } = useParams();
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setSubscribing(true);
+    try {
+      if (!baseUrl) {
+        toast({
+          title: "Error",
+          description: "Service is not configured. Please try again later.",
+          variant: "destructive",
+        });
+        setSubscribing(false);
+        return;
+      }
+
+      const response = await fetch(`${baseUrl}/mail/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to subscribe");
+      }
+
+      toast({
+        title: "Subscribed!",
+        description: "You'll be notified when new articles are published.",
+      });
+      setEmail("");
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to subscribe. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   useEffect(() => {
     const loadPost = async () => {
@@ -35,6 +83,8 @@ const BlogPost = () => {
 
     loadPost();
   }, [slug]);
+
+  const relatedPosts = useMemo(() => getRelatedPosts(post?.slug ?? ""), [post?.slug]);
 
   if (loading) {
     return (
@@ -68,8 +118,6 @@ const BlogPost = () => {
     );
   }
 
-  const relatedPosts = getRelatedPosts(post.slug);
-
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -102,7 +150,7 @@ const BlogPost = () => {
               </span>
             )}
             <div className="flex flex-wrap gap-2 justify-start">
-              {post.tags.map((tag) => (
+              {post.tags?.map((tag) => (
                 <span
                   key={tag}
                   className="px-3 py-1 bg-primary/20 text-primary rounded-full text-xs sm:text-sm"
@@ -205,15 +253,22 @@ const BlogPost = () => {
               Subscribe to get notified when I publish new technical articles
               and tutorials.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <form
+              onSubmit={handleSubscribe}
+              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+            >
               <input
                 type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="flex-grow px-4 py-3 rounded-md bg-card border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
               />
-
-              <Button className="whitespace-nowrap">Subscribe</Button>
-            </div>
+              <Button type="submit" className="whitespace-nowrap" disabled={subscribing}>
+                {subscribing ? "Subscribing..." : "Subscribe"}
+              </Button>
+            </form>
           </div>
         </div>
       </section>

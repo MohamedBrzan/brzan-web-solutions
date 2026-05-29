@@ -11,8 +11,7 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon, Clock } from "lucide-react";
 import { z } from "zod";
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
-if (!baseUrl) throw new Error("Missing VITE_BASE_URL");
+const baseUrl = import.meta.env.VITE_BASE_URL || "";
 
 const bookingSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -113,7 +112,16 @@ const BookingForm = () => {
     setLoading(true);
 
     try {
-      // Step 2: Send to API
+      if (!baseUrl) {
+        toast({
+          title: "Configuration Error",
+          description: "Service is not configured. Please try again later.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(`${baseUrl}/mail/meeting`, {
         method: "POST",
         headers: {
@@ -148,7 +156,7 @@ const BookingForm = () => {
       toast({
         title: "Submission Error",
         description:
-          error.message ?? "Something went wrong while sending booking.",
+          error instanceof Error ? error.message : "Something went wrong while sending booking.",
         variant: "destructive",
       });
     } finally {

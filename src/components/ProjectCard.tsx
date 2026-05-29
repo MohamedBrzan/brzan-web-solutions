@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { ExternalLink, Github } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -17,15 +17,17 @@ export interface Project {
 interface ProjectCardProps {
   project: Project;
   className?: string;
+  style?: CSSProperties;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, className }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, className, style }) => {
   return (
     <div
       className={cn(
         "bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 group",
         className
       )}
+      style={style}
     >
       <div className="relative h-48 overflow-hidden">
         {project.comingSoon && (

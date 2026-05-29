@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import BlogPostCard from "@/components/BlogPostCard";
+import useScrollReveal from "@/hooks/useScrollReveal";
 import {
   BlogPost,
   filterBlogPostsByCategory,
@@ -8,142 +10,41 @@ import {
   searchBlogPosts,
 } from "@/services/blogService";
 
-// Sample blog posts
-const blogPosts: BlogPost[] = [
-  {
-    id: 1,
-    title: "Implementing Authentication with JWT",
-    excerpt:
-      "A comprehensive guide to implementing authentication in web applications using JSON Web Tokens (JWT). Learn about secure token storage, refresh strategies, and best practices.",
-    date: "February 18, 2023",
-    image:
-      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    slug: "implementing-authentication-with-jwt",
-  },
-  {
-    id: 2,
-    title: "Building Scalable React Applications",
-    excerpt:
-      "Learn the key architectural patterns and best practices for building React applications that scale. This article covers component structure, state management, and performance optimization techniques.",
-    date: "April 12, 2023",
-    image:
-      "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    slug: "building-scalable-react-applications",
-  },
-  {
-    id: 3,
-    title: "Database Optimization Techniques",
-    excerpt:
-      "Discover techniques to enhance MongoDB performance through indexing, sharding, and query optimization. Implement these strategies to significantly improve your database response times.",
-    date: "March 5, 2023",
-    image:
-      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    slug: "database-optimization-techniques",
-  },
-
-  {
-    id: 4,
-    title: "Real-Time Applications with Socket.io",
-    excerpt:
-      "Explore how to build real-time features such as chat, notifications, and collaborative editing using Socket.io and Node.js. This tutorial covers both server and client implementation.",
-    date: "January 30, 2023",
-    image:
-      "https://images.unsplash.com/photo-1551033406-611cf9a28f67?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    slug: "real-time-applications-with-socketio",
-  },
-  {
-    id: 5,
-    title: "Microservices vs Monoliths: Choosing the Right Architecture",
-    excerpt:
-      "An analysis of different architectural approaches for web applications. Understand the trade-offs between microservices and monolithic architectures to make informed decisions for your projects.",
-    date: "December 12, 2022",
-    image:
-      "https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    slug: "microservices-vs-monoliths",
-  },
-  {
-    id: 6,
-    title: "Advanced TypeScript Patterns for React Developers",
-    excerpt:
-      "Take your TypeScript skills to the next level with advanced patterns specifically useful for React development. Learn about generics, utility types, and type-safe component design.",
-    date: "November 5, 2022",
-    image:
-      "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    slug: "advanced-typescript-patterns-for-react",
-  },
-];
-
-const categories = [
-  "All",
-  "React",
-  "Node.js",
-  "Database",
-  "Architecture",
-  "TypeScript",
-  "Performance",
-  "Security",
-];
-
 const Blog = () => {
-  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(blogPosts);
+  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(getAllBlogPosts());
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  useEffect(() => {
-    const revealElements = document.querySelectorAll(".reveal");
-
-    const reveal = () => {
-      revealElements.forEach((element) => {
-        const windowHeight = window.innerHeight;
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-
-        if (elementTop < windowHeight - elementVisible) {
-          element.classList.add("active");
-        }
-      });
-    };
-
-    window.addEventListener("scroll", reveal);
-    reveal(); // Initial check
-
-    return () => window.removeEventListener("scroll", reveal);
+  const categories = useMemo(() => {
+    const allPosts = getAllBlogPosts();
+    const uniqueCategories = Array.from(
+      new Set(allPosts.map((post) => post.category).filter(Boolean))
+    );
+    return ["All", ...uniqueCategories];
   }, []);
 
-  useEffect(() => {
-    setFilteredPosts(getAllBlogPosts());
-  }, []);
+  useScrollReveal();
 
   const filterPosts = (category: string) => {
     setActiveCategory(category);
 
     if (category === "All") {
-      setFilteredPosts(
-        blogPosts.filter((post) =>
-          post.title.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
+      const posts = searchTerm
+        ? searchBlogPosts(searchTerm)
+        : getAllBlogPosts();
+      setFilteredPosts(posts);
     } else {
-      setFilteredPosts(
-        blogPosts.filter(
-          (post) =>
-            (post.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-              post.title.includes(category)) ||
-            post.excerpt.includes(category)
-        )
-      );
-
-      let posts = filterBlogPostsByCategory(category);
+      const categoryPosts = filterBlogPostsByCategory(category);
 
       if (searchTerm) {
-        posts = posts.filter(
-          (post) =>
-            post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+        const searchResults = searchBlogPosts(searchTerm);
+        const posts = categoryPosts.filter((cp) =>
+          searchResults.some((sp) => sp.id === cp.id)
         );
+        setFilteredPosts(posts);
+      } else {
+        setFilteredPosts(categoryPosts);
       }
-
-      setFilteredPosts(posts);
     }
   };
 
@@ -152,34 +53,21 @@ const Blog = () => {
     setSearchTerm(term);
 
     if (activeCategory === "All") {
-      setFilteredPosts(
-        blogPosts.filter((post) =>
-          post.title.toLowerCase().includes(term.toLowerCase())
-        )
-      );
+      const posts = term
+        ? searchBlogPosts(term)
+        : getAllBlogPosts();
+      setFilteredPosts(posts);
     } else {
-      setFilteredPosts(
-        blogPosts.filter(
-          (post) =>
-            post.title.toLowerCase().includes(term.toLowerCase()) &&
-            (post.title.includes(activeCategory) ||
-              post.excerpt.includes(activeCategory))
-        )
-      );
+      const categoryPosts = filterBlogPostsByCategory(activeCategory);
 
       if (term) {
         const searchResults = searchBlogPosts(term);
-        const categoryFiltered =
-          activeCategory === "All"
-            ? searchResults
-            : searchResults.filter((post) =>
-                post.tags.some((tag) =>
-                  tag.toLowerCase().includes(activeCategory.toLowerCase())
-                )
-              );
-        setFilteredPosts(categoryFiltered);
+        const posts = categoryPosts.filter((cp) =>
+          searchResults.some((sp) => sp.id === cp.id)
+        );
+        setFilteredPosts(posts);
       } else {
-        setFilteredPosts(filterBlogPostsByCategory(activeCategory));
+        setFilteredPosts(categoryPosts);
       }
     }
   };
@@ -244,7 +132,7 @@ const Blog = () => {
                 onClick={() => {
                   setSearchTerm("");
                   setActiveCategory("All");
-                  setFilteredPosts(blogPosts);
+                  setFilteredPosts(getAllBlogPosts());
                 }}
                 className="mt-4 btn btn-outline"
               >
@@ -301,13 +189,13 @@ const Blog = () => {
               If you'd like me to write about a specific technical topic or have
               questions about any of my articles, feel free to reach out.
             </p>
-            <a
-              href="/contact"
+            <Link
+              to="/contact"
               className="btn btn-outline inline-flex items-center"
             >
               Contact Me
               <ArrowRight size={16} className="ml-2" />
-            </a>
+            </Link>
           </div>
         </div>
       </section>

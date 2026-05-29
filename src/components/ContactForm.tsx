@@ -9,8 +9,7 @@ const contactSchema = z.object({
   message: z.string().min(1, "Message is required"),
 });
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
-if (!baseUrl) throw new Error("Missing VITE_BASE_URL");
+const baseUrl = import.meta.env.VITE_BASE_URL || "";
 
 type ContactData = z.infer<typeof contactSchema>;
 
@@ -52,11 +51,25 @@ const ContactForm = () => {
     }
 
     try {
-      await fetch(`${baseUrl}/mail/contact`, {
+      if (!baseUrl) {
+        toast({
+          title: "Configuration Error",
+          description: "Service is not configured. Please try again later.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`${baseUrl}/mail/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(validation.data),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
 
       toast({
         title: "Message sent!",
@@ -70,8 +83,6 @@ const ContactForm = () => {
         message: "",
       });
     } catch (err) {
-      console.log(err);
-
       toast({
         title: "Error sending message",
         description: "Please try again later.",

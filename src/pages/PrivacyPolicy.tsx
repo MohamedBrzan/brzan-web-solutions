@@ -2,7 +2,7 @@ import React from "react";
 
 const PrivacyPolicy: React.FC = () => {
   return (
-    <main className="max-w-4xl mx-auto px-4 py-12 text-neutral-100 dark:text-neutral-800">
+    <main className="max-w-4xl mx-auto px-4 py-12 text-foreground">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
 
       <p className="mb-4">
@@ -76,10 +76,10 @@ const PrivacyPolicy: React.FC = () => {
         at:
         <br />
         <a
-          href="mailto:mohamedbrzan.dev@email.com"
+          href="mailto:mohamedbrzan.dev@gmail.com"
           className="text-blue-600 underline dark:text-blue-400"
         >
-          mohamedbrzan.dev@email.com
+          mohamedbrzan.dev@gmail.com
         </a>
       </p>
 

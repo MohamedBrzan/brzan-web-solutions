@@ -14,7 +14,7 @@ const Header = () => {
             <div className="relative">
               <div className="w-64 h-64 md:w-80 md:h-80 rounded-xl overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src="/assets/images/hero-image.jpg"
                   alt="Mohamed Brzan"
                   className="w-full h-full object-cover"
                 />

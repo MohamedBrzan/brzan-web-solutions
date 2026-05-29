@@ -1,13 +1,39 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+
+const navLinks = [
+  { to: "/", label: "Home" },
+  { to: "/portfolio", label: "Portfolio" },
+  { to: "/about", label: "About" },
+  { to: "/services", label: "Services" },
+  { to: "/blog", label: "Blog" },
+  { to: "/contact", label: "Contact" },
+];
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const isActive = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path);
+  };
+
+  const linkClass = (path: string) =>
+    `transition-colors ${
+      isActive(path)
+        ? "text-primary font-medium"
+        : "text-foreground hover:text-primary"
+    }`;
 
   return (
     <nav className="py-4 bg-background/95 sticky top-0 z-50 backdrop-blur-sm">
@@ -16,7 +42,6 @@ const Navbar = () => {
           MB<span className="text-primary">.</span>
         </Link>
 
-        {/* Mobile menu button */}
         <button
           className="md:hidden text-foreground"
           onClick={toggleMenu}
@@ -25,56 +50,14 @@ const Navbar = () => {
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        {/* Desktop menu */}
         <ul className="hidden md:flex space-x-8 items-center">
-          <li>
-            <Link
-              to="/"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/portfolio"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Portfolio
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/about"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              About
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/services"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Services
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/blog"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Blog
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/contact"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Contact
-            </Link>
-          </li>
+          {navLinks.map((link) => (
+            <li key={link.to}>
+              <Link to={link.to} className={linkClass(link.to)}>
+                {link.label}
+              </Link>
+            </li>
+          ))}
           <li>
             <Link to="/booking" className="btn btn-primary">
               Book a Meeting
@@ -82,7 +65,6 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {/* Mobile menu */}
         {isMenuOpen && (
           <div className="fixed inset-0 bg-background z-40 md:hidden">
             <div className="h-full flex flex-col">
@@ -99,64 +81,21 @@ const Navbar = () => {
                 </button>
               </div>
               <ul className="flex flex-col space-y-6 p-6 bg-background">
-                <li>
-                  <Link
-                    to="/"
-                    className="text-foreground hover:text-primary transition-colors text-xl"
-                    onClick={toggleMenu}
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/portfolio"
-                    className="text-foreground hover:text-primary transition-colors text-xl"
-                    onClick={toggleMenu}
-                  >
-                    Portfolio
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/about"
-                    className="text-foreground hover:text-primary transition-colors text-xl"
-                    onClick={toggleMenu}
-                  >
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/services"
-                    className="text-foreground hover:text-primary transition-colors text-xl"
-                    onClick={toggleMenu}
-                  >
-                    Services
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/blog"
-                    className="text-foreground hover:text-primary transition-colors text-xl"
-                    onClick={toggleMenu}
-                  >
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/contact"
-                    className="text-foreground hover:text-primary transition-colors text-xl"
-                    onClick={toggleMenu}
-                  >
-                    Contact
-                  </Link>
-                </li>
+                {navLinks.map((link) => (
+                  <li key={link.to}>
+                    <Link
+                      to={link.to}
+                      className={`${linkClass(link.to)} text-xl`}
+                      onClick={toggleMenu}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
                 <li className="pt-4">
                   <Link
                     to="/booking"
-                    className="btn btn-primary w-full text-center"
+                    className="btn btn-primary w-full text-center block"
                     onClick={toggleMenu}
                   >
                     Book a Meeting
