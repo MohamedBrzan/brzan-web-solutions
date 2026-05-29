@@ -4,10 +4,18 @@ const Experience = () => {
   // Sample work experience
   const experience = [
     {
+      position: "Mid-level Backend Engineer",
+      company: "Revamp Consulting",
+      location: "Egypt, Cairo - Remotely",
+      period: "July 2025 - Present",
+      description:
+        "Developed and maintained custom web applications and Shopify apps using Node.js, Express, and MongoDB, containerized services with Docker, configured Nginx for reverse proxy and deployment workflows, integrated Sentry for monitoring and error tracking, collaborated across frontend and backend teams, and optimized API performance, scalability, and system reliability.",
+    },
+    {
       position: "Mid-level Full-Stack Developer",
       company: "Appout ITS",
       location: "Egypt, Tanta - Hybrid",
-      period: "May 2024 - Present",
+      period: "May 2024 - July 2025",
       description:
         "Developed RESTful and GraphQL APIs with Node.js and Express (35% faster throughput), optimized MongoDB queries (40% latency reduction), automated backend processes, collaborated with frontend teams, and enhanced backend performance with profiling.",
     },
