@@ -27,8 +27,13 @@ const Hero = () => {
           <div className="hidden lg:flex justify-center">
             <div className="relative">
               <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary">
-                <img
+                {/* <img
                   src="https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Mohamed Brzan"
+                  className="w-full h-full object-cover"
+                /> */}
+                <img
+                  src="/assets/images/hero-image.jpg"
                   alt="Mohamed Brzan"
                   className="w-full h-full object-cover"
                 />
