@@ -8,16 +8,28 @@ const Experience = () => {
       company: "Revamp Consulting",
       location: "Egypt, Cairo - Remotely",
       period: "July 2025 - Present",
-      description:
-        "Developed and maintained custom web applications and Shopify apps using Node.js, Express, and MongoDB, containerized services with Docker, configured Nginx for reverse proxy and deployment workflows, integrated Sentry for monitoring and error tracking, collaborated across frontend and backend teams, and optimized API performance, scalability, and system reliability.",
+      description:`Designed, developed, and maintained scalable web applications and Shopify apps using Node.js, Express.js, and MongoDB. Built and containerized services with Docker, configured Nginx for deployment and reverse-proxy workflows, integrated Sentry for monitoring and error tracking, collaborated closely with frontend and backend teams, and optimized API performance, scalability, and system reliability.
+
+Key product contributions include:
+
+• Wishlist Hero (https://apps.shopify.com/wishlist-hero) – Contributed to the ongoing development and enhancement of one of Shopify's popular wishlist applications, implementing new features, improving existing functionality, and maintaining platform stability.
+
+• Back in Stock Hero – Built the backend architecture from scratch for a Shopify application that enables customers to subscribe to out-of-stock products and automatically notifies merchants of product demand. Developed notification workflows, email template management, and automated customer communication systems.
+
+• Request a Quote Hero – Developed the backend system from the ground up for a Shopify application that allows customers to request quotes for individual products or bulk purchases. Implemented location-based pricing capabilities, customer-specific offers, proposal workflows, approval processes, email communications, and real-time notification systems.
+
+• Order Hub – Engineered a custom order management platform enabling Shopify merchants to connect their stores and streamline order operations. Developed configurable order trigger rules, user invitation workflows, role-based access control (Admin, Manager, and Representative roles), team management features, Shopify-integrated billing mechanisms, and assignment workflows to improve operational efficiency.
+`
     },
     {
       position: "Mid-level Full-Stack Developer",
       company: "Appout ITS",
       location: "Egypt, Tanta - Hybrid",
       period: "May 2024 - July 2025",
-      description:
-        "Developed RESTful and GraphQL APIs with Node.js and Express (35% faster throughput), optimized MongoDB queries (40% latency reduction), automated backend processes, collaborated with frontend teams, and enhanced backend performance with profiling.",
+      description:`Developed high-performance RESTful and GraphQL APIs using Node.js and Express, increasing service throughput by 35% and reducing MongoDB query latency by 40% through profiling and optimization. Automated backend processes, collaborated cross-functionally with frontend teams, and continuously improved system reliability and performance.
+
+Played a key role in the development of RoboDesk, an omnichannel customer engagement platform, delivering new product capabilities and backend enhancements. Designed and implemented integrations to support AI-powered assistant functionality, enabling intelligent customer interactions, workflow automation, and enhanced user experiences across multiple communication channels.
+`
     },
     {
       position: "Full-Stack Developer",
